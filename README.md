@@ -1,6 +1,6 @@
 # Markdown.social
 
-A decentralized social network that uses Markdown files over HTTP. Content and presentation decoupled.
+A decentralized social network that uses Markdown files over HTTP. Decoupling content and presentation.
 
 # Introduction
 
