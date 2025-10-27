@@ -19,11 +19,49 @@ tooling that goes beyond any simple text editor.
 
 # First steps
 
-The easiest way to use Markdown.social is by creating a simple file: `social.md` and add some meta information to it.
+All you need to use Markdown.social is a place to publicly host at least one file, preferably with your own domain. As
+long as the domain remains the same, other users can subscribe to your feed, by adding it to their follows-list.
+
+## Using the mds tool
+
+The easiest way, to create a `social.md` file is to use mds.
+
+Right now, there are no prebuilt packages, so you need to build it yourself, using the zig compiler:
+
+```shell
+# assuming you have the most recent version of zig (v0.15.2 at the time of writing)
+git clone https://github.com/nkoehring/markdown.social
+cd markdown.social/cli
+zig build # binary will be in zig-out/bin
+# to build a small binary (kBs vs MBs) and copy it to ~/.local/bin, use:
+# zig build --release=small --prefix ~/.local
+```
+
+As soon as you have the mds tool available, you can create a new social.md file with:
+
+```shell
+mds init
+# optionally suppling some values already:
+mds init --nick "Jon Doe" --title "Here's Johnny!"
+```
+
+This will create and prefill a social.md file and open it in your editor for further editing. To add a new post, use:
+
+```shell
+mds add
+```
+
+which behaves similar to init, in that it opens the file in your editor afterwards.
+
+## Without any tooling
+
+Markdown.social doesn't need any tools. In fact, the format is meant to be easily readable and writable by humans.
+
+Start by creating the file: `social.md` and add some meta information to it.
 Mandatory fields are type, version, format, nick and title. The rest is optional.
-What follows is the about section, which is a full markdown post. In single file mode, other posts can be added after
-the about section, starting with another frontmatter section. Every post needs a valid ISO 8601 timestamp as unique ID.
-All other entries are optional. Here is an example:
+What follows is the about section, which is a full markdown post. Other posts can be added after the about section,
+starting with another frontmatter section. Every post needs a valid ISO 8601 timestamp as unique ID but also supports
+other fields optional fields. Here is an example:
 
 ```markdown
 ---
@@ -55,7 +93,6 @@ This is just like any other markdown post. You decide its content, the reader de
 
 ---
 id: 2025-10-26T17:21:00Z
-category: ideas
 tags:
   - markdown
   - decentralization
@@ -90,7 +127,7 @@ is possible to have additional files that could be called pages or categories. T
 /social.md/index.md     # Meta data (profile), about section, general posts
 /social.md/ideas.md     # Ideas page, with its own meta data, about section and posts
 /social.md/projects.md  # Projects page, with its own meta data, about section and posts
-/social.md/2024.md      # Archive for last year posts, maybe? It would be just another category
+/social.md/2024.md      # Archive for last year posts, maybe? It's just another category
 ```
 
 To make categories discoverable, they need to be added to your index.md file's frontmatter:
