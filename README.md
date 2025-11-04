@@ -1,150 +1,164 @@
-# Markdown.social
+# plaintext.casa
 
-A decentralized social network that uses Markdown files over HTTP. Decoupling content and presentation.
+A decentralized social network that uses plain text files over HTTP. Decoupling content and presentation.
 
 # Introduction
 
 *The author determines the content, the reader determines its presentation.*
 
-Inspired by [Org Social](https://github.com/tanrax/org-social), twtxt and others, Markdown.social is a decentralized
+Inspired by [Org Social](https://github.com/tanrax/org-social), twtxt and others, plaintext.casa is a decentralized
 social network that is as simple and flexible as writing blog posts with a static page generator.
 
-The intention behind using Markdown, a proven and well-known format, is to open up the idea of domain based social
-media to a broader audience. It also offers more flexible ways to structure posts, by going beyond single files, while
-still supporting them.
+Other than the mentioned formats, plaintext.casa does not use a fixed file format but instead suggests a format that
+works in different plain text formats like Markdown, Org, AsciiDoc or txt. Thanks to its flexibility, plaintext.casa
+currently supports Org Social feeds as well, but future compatibility is neither guaranteed nor planned.
 
-Markdown.social is meant to be easy to read and write by both humans and machines. Anyone who can host at least one
+plaintext.casa is meant to be easy to read and write by both humans and machines. Anyone who can host at least one
 file in a way that is reachable by the rest of the internet should be able to use all the features, with or without
 tooling that goes beyond any simple text editor.
 
 # First steps
 
-All you need to use Markdown.social is a place to publicly host at least one file, preferably with your own domain. As
+All you need to use plaintext.casa is a place to publicly host at least one file, preferably with your own domain. As
 long as the domain remains the same, other users can subscribe to your feed, by adding it to their follows-list.
 
-## Using the mds tool
+## Manual creation
 
-The easiest way, to create a `social.md` file is to use mds.
+plaintext.casa doesn't need any tools. In fact, the format is meant to be easily readable and writable by humans. The general file structure is:
 
-Right now, there are no prebuilt packages, so you need to build it yourself, using the zig compiler:
+1. Document header
+2. About Section (optional)
+3. Meta Data of the oldest (first) post
+4. The oldest (first) post
+5. Meta Data of the second oldest post
+6. The second oldest post
+...and so on.
 
-```shell
-# assuming you have the most recent version of zig (v0.15.2 at the time of writing)
-git clone https://github.com/nkoehring/markdown.social
-cd markdown.social/cli
-zig build # binary will be in zig-out/bin
-# to build a small binary (kBs vs MBs) and copy it to ~/.local/bin, use:
-# zig build --release=small --prefix ~/.local
-```
+### Document header
 
-As soon as you have the mds tool available, you can create a new social.md file with:
+Start by creating the file in the format of your choice, for example: `feed.md`, `feed.org` or `feed.adoc` and add some
+meta data to it. Only `title` and `nick` are required, but more fields are supported by default. Some fields can appear
+multiple times:
 
-```shell
-mds init
-# optionally suppling some values already:
-mds init --nick "Jon Doe" --title "Here's Johnny!"
-```
+|   Field     |                                 Description                                     | Multiple | Required |
+| ----------- | ------------------------------------------------------------------------------- | -------- | -------- |
+| title       | The title of your social feed                                                   |  ✘       |  ✔       |
+| author/nick | Your nickname. This will be displayed in posts.                                 |  ✘       |  ✔       |
+| description | A short description about you or your feed.                                     |  ✘       |  ✘       |
+| lang        | ISO 639-1 or -2 code of the typical language used. Can be changed per post.     |  ✘       |  ✘       |
+| avatar      | The URL of your avatar image. Org social has some constraints here, we do not.  |  ✘       |  ✘       |
+| link        | Links to your website, profile, email, matrix, fediverse... you name it.        |  ✔       |  ✘       |
+| follow      | Users you follow. Format: `<nick> URL`, eg `Nick https://nick.tld/plaintext.casa/feed.org`.|  ✔  | ✘  |
+| contact     | Ways to contact you. Alias for link.                                            |  ✔       |  ✘       |
+| page        | Additional feeds, if the multi page mode is used. See (#pages)                  |  ✔       |  ✘       |
 
-This will create and prefill a social.md file and open it in your editor for further editing. To add a new post, use:
+More fields can be added. They might or might not be supported by whatever tooling others use. In the latter case the
+tool should simply show them as text fields but otherwise ignore them.
 
-```shell
-mds add
-```
+Depending on the format, the header might be formatted differently. Org-mode files should be formatted just like
+Org-Social suggests. AsciiDoc files should use Document Headers just as supported by the format. Markdown has no
+build-in support for meta data, so plaintext.casa comes with its own format for it, that is heavily inspired by
+AsciiDoc's. See the [examples folder](/examples) for all supported formats and their specific formattings.
 
-which behaves similar to init, in that it opens the file in your editor afterwards.
+### About section
 
-## Without any tooling
+After the feed meta data follows an optional about section. This is just like a post but without its own header. It can
+be shown as extended introduction, kind of like an about page. Specialised clients might handle it in their own way.
 
-Markdown.social doesn't need any tools. In fact, the format is meant to be easily readable and writable by humans.
+### Posts
 
-Start by creating the file: `social.md` and add some meta information to it.
-Mandatory fields are type, version, format, nick and title. The rest is optional.
-What follows is the about section, which is a full markdown post. Other posts can be added after the about section,
-starting with another frontmatter section. Every post needs a valid ISO 8601 timestamp as unique ID but also supports
-other fields optional fields. Here is an example:
+Then posts follow ordered by time of creation, with the newest post last. A post starts with its own meta data:
 
-```markdown
----
-type: markdownsocial
-version: "1.0"
-nick: Alice
-title: "Alice's Wonderland"
-description: HTTP based social media, markdown and simplicity enthusiast
-lang: en
-avatar: /avatar.jpg
-links:
-  - https://alice.wonder.land
-  - https://alice.wonder.land/social.md
-  - https://codeberg.org/alice
-  - mailto:alice@wonder.land
-follow:
-  - url: https://bob.example/social.md
-    nick: my mate Bob
-  - url: https://charlie.example/social.md
-    nick: Charlie
----
+|   Field     |                              Description                           | Example               | Required |
+| ----------- | ------------------------------------------------------------------ | --------------------- | -------- |
+| id          | Unique identifier, use an RFC 3339 formatted timestamp for Social Org compatibility | `my-first-post` or `2025-11-11T12:00:00+0100` | ✔ |
+| lang        | The language used in this post. Use [ISO 639-1](https://www.loc.gov/standards/iso639-2/php/code_list.php) | `en`,`de`,`sw`,`art`,`tlh` | ✘ |
+| tags        | space-separated tags                                               | `plaintext social feed` |  ✘     |
+| reply_to    | ID of post being replied to. Format: `URL`+`#`+`ID`                | `https://foo.tld/plaintext.casa/feed.adoc#my-first-post` | ✘ |
+| mood        | Mood indicator, either as emoji or plaintext.                      | `😊`,`❤`,`🚀`           |  ✘       |
 
-Everything between the initial frontmatter and the first post is considered an about section.
+Just like with the feed meta data, additional fields are allowed, but might not be interpreted by any tooling.
 
-# Say what?
+Post meta data is follwed by the actual post content in the format of your choice. Here is a full example in Markdown:
 
-Yes, you can do *whatever* you want, as long as [markdown](https://daringfireball.net/projects/markdown/) supports it.
-This is just like any other markdown post. You decide its content, the reader decides how they want it to be rendered.
 
----
-id: 2025-10-26T17:21:00Z
-tags:
-  - markdown
-  - decentralization
-  - social
-mood: adventurous
----
+```adoc
+= Alice's Wonderland
+Alice
+:description: HTTP based social media and simplicity enthusiast
+:lang: en
+:avatar: /avatar.jpg
+:link: https://alice.wonder.land
+:link: https://codeberg.org/alice
+:link: mailto:alice@wonder.land
+:follow: bob https://bob.tld/social.md
+:follow: charlie https://charlie.tld/social.org
+:follow: dieter https://dieter.tld/social.adoc
+
+Everything between the initial meta data and the first post is considered an about section.
+
+== Say what?
+
+Yes, you can do *whatever* you want, as long as the https://asciidoc.org/[format] supports it
+and it is not indicating a new post. This is just like any other markdown post. You decide its content, the reader
+decides how they want it to be rendered.
+
+----
+*id*: 2025-10-26T17:21:00Z
+*tags*: markdown decentralization social
+*mood*: adventurous
+----
 
 I wonder, how a markdown based decentral social media network would look like...
 
----
+----
 id: 2025-10-26T17:27:00Z
 lang: de
 mood: 😜
----
+----
 
 Ja, ich spreche auch Deutsch, wenn ich will!
 
----
+----
 id: 2025-10-26T18:10:00Z
-reply_to: https://charlie.example/social.md#2025-10-26T17:55:00Z
----
+reply_to: https://charlie.example/social.org#2025-10-26T17:55:00Z
+----
 
 Yes, I totally agree with that very detailled and specific post of yours.
 ```
 
-# Pages / Categories
+Notice, that markdown uses four dashes for separation here. This is meant as a backwards compatible extension to the
+format, that would just be parsed as horizontal rule by other parsers.
 
-Markdown.social supports an additional way of structuring your posts. While a single file might be enough for most, it
-is possible to have additional files that could be called pages or categories. The file tree might then look like this:
+See more formats in the [examples](/examples) folder.
+
+# Pages
+
+plaintext.casa supports an additional way of structuring your posts, similar to Org Social's groups, but more flexible.
+While a single file might be enough for most, it is possible to have additional files that could be called pages,
+groups or categories. The file tree might then look like this:
 
 ```
-/social.md/index.md     # Meta data (profile), about section, general posts
-/social.md/ideas.md     # Ideas page, with its own meta data, about section and posts
-/social.md/projects.md  # Projects page, with its own meta data, about section and posts
-/social.md/2024.md      # Archive for last year posts, maybe? It's just another category
+/plaintext.casa/index.md     # Meta data (profile), about section, general posts in Markdown format
+/plaintext.casa/ideas.adoc   # Ideas page, with its own meta data, about section and posts in AsciiDoc format
+/plaintext.casa/projects.md  # Projects page, with its own meta data, about section and posts
+/plaintext.casa/2024.md      # Archive for last year posts, maybe? It's just another category
 ```
 
 To make categories discoverable, they need to be added to your index.md file's frontmatter:
 
 ```markdown
----
-type: markdownsocial
-version: "1.0"
-nick: Alice
-title: "Alice's Wonderland"
-categories:
-  - ideas
-  - "2024"
----
+*nick*: Alice
+*title*: Alice's Wonderland
+*description*: HTTP based social media and simplicity enthusiast
+*page*: ideas.adoc
+*page*: projects.md
+----
 ```
+
+Unlisted pages are not discoverable and only reachable if the link is known. You could call it a pseudo private page.
 
 # Implementation
 
-Please see the [SPEC](markdown-social.spec.md) for details on the file format.
+Please see the [SPEC](plaintext.casa.spec.md) for details on the file format.
 

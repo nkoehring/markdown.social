@@ -1,18 +1,18 @@
-# Markdown Social Specification v1.0
+# Plaintext Casa Specification v1.0
 
 **Status:** Draft  
 **Date:** October 2025  
-**Authors:** koehr <n@koehr.ing>, the Markdown Social Community
+**Authors:** koehr <n@koehr.ing>, the Plaintext Casa Community
 
 ## Abstract
 
-Markdown Social is a decentralized social media format using Markdown files served over HTTP/HTTPS. It enables individuals to publish social content from their own domains without requiring specialized server software or databases.
+Plaintext Casa is a decentralized social media format using plain text files served over HTTP/HTTPS. It enables individuals to publish social content from their own domains without requiring specialized server software or databases.
 
 ## 1. Introduction
 
 ### 1.1 Goals
 
-- **Simplicity**: Plain markdown files, no special server required
+- **Simplicity**: Plain text files, no special server required
 - **Decentralization**: Each person controls their own content and domain
 - **Interoperability**: Standard formats enable multiple client implementations
 - **Ownership**: Content stays under the author's control
@@ -33,70 +33,61 @@ Markdown Social is a decentralized social media format using Markdown files serv
 - **Post**: A single social media update/entry
 - **Profile**: Metadata about the feed author
 - **Category**: A thematic grouping of posts
-- **Client**: Software that reads and displays markdown social feeds
+- **Client**: Software that reads and displays plaintext.casa feeds
 - **Timestamp**: RFC 3339 formatted date-time with timezone
 
 ## 3. File Structure
 
 ### 3.1 Feed Modes
 
-A markdown social feed MUST use one of two modes:
+A plaintext.casa feed MUST use one of two modes:
 
 **Single File Mode:**
+A file with any name, preferably `social` or `feed`, of a supported plain text type. For example `social.org`, `feed.adoc` or `social.md`
+
+**Multi-Page Mode:**
+Files in a `plaintext.casa` folder, that are named `index` or after their category:
+
 ```
-/social.md
+/plaintext.casa/
+ ├─ index.adoc
+ ├─ <category1>.adoc
+ └─ <category2>.md
 ```
 
-**Multi-Category Mode:**
-```
-/social.md/
- ├─ index.md
- ├─ <category>.md
- └─ <category>.md
-```
+Files can be of any supported type.
 
 ### 3.2 File Naming
 
-- The base path MUST be `/social.md`
-- In multi-category mode, the directory MUST be `/social.md/`
-- In multi-category mode, the index file MUST be `/social.md/index.md`
-- Category files MUST use `.md` extension
+- In single-category mode, any file name is supported. The file suffix MUST indicate its format
+- In multi-page mode, the directory MUST be `/plaintext.casa/`
+- In multi-page mode, the index file MUST be named `index` and use one of the supported suffixes
 - Category filenames SHOULD contain only alphanumeric characters, hyphens, and underscores
 
 ### 3.3 File Encoding
 
 - Files MUST be encoded as UTF-8
 - Line endings SHOULD be LF (`\n`)
-- Files SHOULD be served with `Content-Type: text/markdown` or `text/plain`
 
 ## 4. Discovery
 
-### 4.1 Discovery Algorithm
+### 4.1 Feed Discovery
 
-Clients MUST attempt discovery in this order:
-
-1. `GET /social.md`
-   - If successful (HTTP 200): Use single file mode
-   - If not found (HTTP 404): Continue to step 2
-   
-2. `GET /social.md/index.md`
-   - If successful (HTTP 200): Use multi-category mode
-   - If not found (HTTP 404): Feed does not exist
+There is no fixed way of feed discovery. Feeds are shared with their full URL. There might be other means, like DNS TXT records or well-known URIs supported by clients.
 
 ### 4.2 Category Discovery
 
-In multi-category mode, clients MUST:
+In multi-page mode, clients MUST:
 
-1. Parse the `categories` list from the index file's profile frontmatter
-2. Construct category URLs as `/social.md/<category>.md`
+1. Collect categories from the index file's profile meta data
+2. Construct category URLs as `/plaintext.casa/<category>`
 3. Fetch category files as needed
-4. MUST NOT assume that the categories list exists
+4. MUST NOT assume that the categories list exists, even in multi-page mode
 
 Example:
-```yaml
-categories:
-  - tech
-  - photography
+```adoc
+:category: tech
+:category: photography
 ```
 Maps to:
 - `/social.md/tech.md`
@@ -163,7 +154,7 @@ links:  # Personal URLs with optional label
 follows:  # Feeds this user follows with optional nick, URLs MUST end with /social.md
   - Bobbie https://bob.com/social.md
   - https://charlie.org/social.md
-categories:  # Multi-category mode only
+pages:  # Multi-page mode only
   - tech
   - photography
 lang: en  # Default language (ISO 639-1), can be overwritten on each post
@@ -207,9 +198,9 @@ lang: en  # Default language (ISO 639-1), can be overwritten on each post
     * prefer the given nick to avoid fetching main feed
     * otherwise fetch meta information from /social.md/index.md
 
-**`categories`:**
+**`pages`:**
 - MUST be an array of strings
-- Only valid in multi-category mode, otherwise ignored
+- Only valid in multi-pages mode, otherwise ignored
 - Each string maps to `<category>.md` file
 
 ## 7. Category Frontmatter
@@ -464,7 +455,7 @@ reply_to: https://bob.com/social.md#2025-10-09T15:00:00Z
 [bob](https://bob.com/social.md) Great point about simplicity!
 ```
 
-### 11.3 Multi-Category Mode
+### 11.3 Multi-Page Mode
 
 **`/social.md/index.md`:**
 ```markdown
