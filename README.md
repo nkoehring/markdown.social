@@ -2,16 +2,20 @@
 
 A decentralized social network that uses plain text files over HTTP. Decoupling content and presentation.
 
+---
+
+    This is still in the drafting phase and changes are still very likely. 
+
+---
+
 # Introduction
 
 *The author determines the content, the reader determines its presentation.*
 
 Inspired by [Org Social](https://github.com/tanrax/org-social), twtxt and others, plaintext.casa is a decentralized
-social network that is as simple and flexible as writing blog posts with a static page generator.
+social network that is as simple and flexible as writing blog posts with a static page generator, maybe even simpler.
 
-Other than the mentioned formats, plaintext.casa does not use a fixed file format but instead suggests a format that
-works in different plain text formats like Markdown, Org, AsciiDoc or txt. Thanks to its flexibility, plaintext.casa
-currently supports Org Social feeds as well, but future compatibility is neither guaranteed nor planned.
+Other than the mentioned formats, plaintext.casa does not use a fixed file format but instead suggests shapes for different plain text formats like Markdown, Org, AsciiDoc or txt. Thanks to its flexibility, plaintext.casa will at least initially support Org Social feeds as well, but future compatibility is neither guaranteed nor planned.
 
 plaintext.casa is meant to be easy to read and write by both humans and machines. Anyone who can host at least one
 file in a way that is reachable by the rest of the internet should be able to use all the features, with or without
@@ -62,12 +66,12 @@ AsciiDoc's. See the [examples folder](/examples) for all supported formats and t
 
 ### About section
 
-After the feed meta data follows an optional about section. This is just like a post but without its own header. It can
+After the feed meta data follows an optional about section. This is just like a post but without meta data. It can
 be shown as extended introduction, kind of like an about page. Specialised clients might handle it in their own way.
 
 ### Posts
 
-Then posts follow ordered by time of creation, with the newest post last. A post starts with its own meta data:
+Then posts follow, ordered by time of creation, with the newest post last. A post starts with its own meta data:
 
 |   Field     |                              Description                           | Example               | Required |
 | ----------- | ------------------------------------------------------------------ | --------------------- | -------- |
@@ -76,6 +80,7 @@ Then posts follow ordered by time of creation, with the newest post last. A post
 | tags        | space-separated tags                                               | `plaintext social feed` |  ✘     |
 | reply_to    | ID of post being replied to. Format: `URL`+`#`+`ID`                | `https://foo.tld/plaintext.casa/feed.adoc#my-first-post` | ✘ |
 | mood        | Mood indicator, either as emoji or plaintext.                      | `😊`,`❤`,`🚀`           |  ✘       |
+| content_warning | To give any kind of content warning                    | `clickbait`           |  ✘       |
 
 Just like with the feed meta data, additional fields are allowed, but might not be interpreted by any tooling.
 
@@ -158,7 +163,4 @@ To make categories discoverable, they need to be added to your index.md file's f
 
 Unlisted pages are not discoverable and only reachable if the link is known. You could call it a pseudo private page.
 
-# Implementation
-
-Please see the [SPEC](plaintext.casa.spec.md) for details on the file format.
 
