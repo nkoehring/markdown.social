@@ -123,8 +123,6 @@ Ja, ich spreche auch Deutsch, wenn ich will!
 Yes, I totally agree with that very detailled and specific post of yours.
 ```
 
-Notice, that markdown uses four dashes for separation here. This is meant as a backwards compatible extension to the format, that would just be parsed as horizontal rule by other parsers.
-
 See more formats in the [examples](/examples) folder.
 
 # Pages
