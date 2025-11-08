@@ -1,4 +1,4 @@
-= Alice's Wonderland
+:title: Alice's Wonderland
 :description: HTTP based social media and simplicity enthusiast
 :author: Alice
 :lang: en
@@ -12,15 +12,19 @@
 
 Everything between the initial meta data and the first post is considered an about section.
 
-== Say what?
-Yes, you can do *whatever* you want, as long as the https://asciidoc.org/[format] supports it and it is not indicating a new post. This is just like any other markdown post. You decide its content, the reader decides how they want it to be rendered.
+Say what?
+=========
+
+Yes, you can do *whatever* you want, as long as the format_ supports it and it is not indicating a new post. This is just like any other markdown post. You decide its content, the reader decides how they want it to be rendered.
+
+.. _format: https://docutils.sourceforge.io/rst.html
 
 **
 :id: 2025-10-26T17:21:00Z
-:tags: asciidoc decentralization social
+:tags: plaintext decentralization social
 :mood: adventurous
 
-I wonder, how a asciidoc based decentral social media network would look like...
+I wonder, how a plaintext based decentral social media network would look like...
 
 **
 :id: 2025-10-26T17:27:00Z
@@ -34,3 +38,4 @@ Ja, ich spreche auch Deutsch, wenn ich will!
 :reply_to: https://charlie.example/social.org#2025-10-26T17:55:00Z
 
 Yes, I totally agree with that very detailled and specific post of yours.
+

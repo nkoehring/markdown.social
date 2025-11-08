@@ -13,9 +13,7 @@
 Everything between the initial meta data and the first post is considered an about section.
 
 ## Say what?
-Yes, you can do *whatever* you want, as long as the [https://daringfireball.net/projects/markdown/](format) supports it
-and it is not indicating a new post. This is just like any other markdown post. You decide its content, the reader
-decides how they want it to be rendered.
+Yes, you can do *whatever* you want, as long as the [https://daringfireball.net/projects/markdown/](format) supports it and it is not indicating a new post. This is just like any other markdown post. You decide its content, the reader decides how they want it to be rendered.
 
 **
 :id: 2025-10-26T17:21:00Z
