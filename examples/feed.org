@@ -1,0 +1,41 @@
+#+TITLE: Alice's Wonderland
+#+NICK: Alice
+#+DESCRIPTION: HTTP based social media and simplicity enthusiast
+#+AVATAR: /avatar.jpg
+#+LINK: https://alice.wonder.land
+#+LINK: https://codeberg.org/alice
+#+CONTACT: mailto:alice@wonder.land
+#+FOLLOW: bob https://bob.tld/social.md
+#+FOLLOW: charlie https://charlie.tld/social.org
+#+FOLLOW: dieter https://dieter.tld/social.adoc
+
+Everything between the initial meta data and the first post is considered an about section.
+
+** Say what?
+Yes, you can do *whatever* you want, as long as the [[https://orgmode.org/worg/org-syntax.html][format]] supports it and it is not indicating a new post. This is just like any other post. You decide its content, the reader decides how they want it to be rendered.
+
+**
+:PROPERTIES:
+:ID: 2025-10-26T17:21:00Z
+:TAGS: asciidoc decentralization social
+:MOOD: adventurous
+:END:
+
+I wonder, how an org-mode based decentral social media network would look like... oh wait!
+
+**
+:PROPERTIES:
+:ID: 2025-10-26T17:27:00Z
+:LANG: de
+:MOOD: 😜
+:END:
+
+Ja, ich spreche auch Deutsch, wenn ich will!
+
+**
+:PROPERTIES:
+:ID: 2025-10-26T18:10:00Z
+:REPLY_TO: https://charlie.example/social.org#2025-10-26T17:55:00Z
+:END:
+
+Yes, I totally agree with that very detailled and specific post of yours.

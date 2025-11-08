@@ -47,7 +47,8 @@ multiple times:
 |   Field     |                                 Description                                     | Multiple | Required |
 | ----------- | ------------------------------------------------------------------------------- | -------- | -------- |
 | title       | The title of your social feed                                                   |  ✘       |  ✔       |
-| author/nick | Your nickname. This will be displayed in posts.                                 |  ✘       |  ✔       |
+| author      | Your nickname. This will be displayed in posts.                                 |  ✘       |  ✔/✘*       |
+| nick        | Your nickname. Alias for author.                                 |  ✘       |  ✔/✘*       |
 | description | A short description about you or your feed.                                     |  ✘       |  ✘       |
 | lang        | ISO 639-1 or -2 code of the typical language used. Can be changed per post.     |  ✘       |  ✘       |
 | avatar      | The URL of your avatar image. Org social has some constraints here, we do not.  |  ✘       |  ✘       |
@@ -56,13 +57,14 @@ multiple times:
 | contact     | Ways to contact you. Alias for link.                                            |  ✔       |  ✘       |
 | page        | Additional feeds, if the multi page mode is used. See (#pages)                  |  ✔       |  ✘       |
 
-More fields can be added. They might or might not be supported by whatever tooling others use. In the latter case the
-tool should simply show them as text fields but otherwise ignore them.
+    *) Either nick or author is required. Use nick for Org Social compatibility.
+
+The feed title can be defined either as level one title (like, `# The Title` in Markdown) or like any other variable (`:title: The Title` in MD or ADOC, or `#+TITLE: The Title` in Org). For Org Social compatibility, use the latter.
+
+More fields can be added. They might or might not be supported by whatever tooling others use. In the latter case the tool should simply show them as text fields and otherwise ignore them.
 
 Depending on the format, the header might be formatted differently. Org-mode files should be formatted just like
-Org-Social suggests. AsciiDoc files should use Document Headers just as supported by the format. Markdown has no
-build-in support for meta data, so plaintext.casa comes with its own format for it, that is heavily inspired by
-AsciiDoc's. See the [examples folder](/examples) for all supported formats and their specific formattings.
+Org-Social suggests. AsciiDoc files should use AsciiDoc's Document Headers. Markdown has no build-in support for meta data, so plaintext.casa comes with its own format for it, that is heavily inspired by AsciiDoc's. See the [examples folder](/examples) for all supported formats and their specifics.
 
 ### About section
 
@@ -71,7 +73,9 @@ be shown as extended introduction, kind of like an about page. Specialised clien
 
 ### Posts
 
-Then posts follow, ordered by time of creation, with the newest post last. A post starts with its own meta data:
+Then posts follow, ordered by time of creation, with the newest post last. Posts always start with the magic `**` followed by a newline a post meta data block. Post meta data can optionally be wrapped in `:PROPERTIES:` and `:END:`, but this is generally only about Org Social compatibility. An empty line marks the end of the post meta data block.
+
+Following fields are supported by default:
 
 |   Field     |                              Description                           | Example               | Required |
 | ----------- | ------------------------------------------------------------------ | --------------------- | -------- |
@@ -84,13 +88,13 @@ Then posts follow, ordered by time of creation, with the newest post last. A pos
 
 Just like with the feed meta data, additional fields are allowed, but might not be interpreted by any tooling.
 
-Post meta data is follwed by the actual post content in the format of your choice. Here is a full example in Markdown:
+Post meta data is followed by the actual post content in the format of your choice. Here is a full example in AsciiDoc, showing Alice's Wonderland by Alice.
 
 
 ```adoc
 = Alice's Wonderland
-Alice
 :description: HTTP based social media and simplicity enthusiast
+:author: Alice
 :lang: en
 :avatar: /avatar.jpg
 :link: https://alice.wonder.land
@@ -103,31 +107,27 @@ Alice
 Everything between the initial meta data and the first post is considered an about section.
 
 == Say what?
-
 Yes, you can do *whatever* you want, as long as the https://asciidoc.org/[format] supports it
 and it is not indicating a new post. This is just like any other markdown post. You decide its content, the reader
 decides how they want it to be rendered.
 
-----
-*id*: 2025-10-26T17:21:00Z
-*tags*: markdown decentralization social
-*mood*: adventurous
-----
+**
+:id: 2025-10-26T17:21:00Z
+:tags: markdown decentralization social
+:mood: adventurous
 
 I wonder, how a markdown based decentral social media network would look like...
 
-----
-id: 2025-10-26T17:27:00Z
-lang: de
-mood: 😜
-----
+**
+:id: 2025-10-26T17:27:00Z
+:lang: de
+:mood: 😜
 
 Ja, ich spreche auch Deutsch, wenn ich will!
 
-----
-id: 2025-10-26T18:10:00Z
-reply_to: https://charlie.example/social.org#2025-10-26T17:55:00Z
-----
+**
+:id: 2025-10-26T18:10:00Z
+:reply_to: https://charlie.example/social.org#2025-10-26T17:55:00Z
 
 Yes, I totally agree with that very detailled and specific post of yours.
 ```
@@ -150,17 +150,16 @@ groups or categories. The file tree might then look like this:
 /plaintext.casa/2024.md      # Archive for last year posts, maybe? It's just another category
 ```
 
-To make categories discoverable, they need to be added to your index.md file's frontmatter:
+To make categories discoverable, they need to be added to your feeds meta data (eg `index.md`):
 
 ```markdown
-*nick*: Alice
-*title*: Alice's Wonderland
-*description*: HTTP based social media and simplicity enthusiast
-*page*: ideas.adoc
-*page*: projects.md
-----
+:nick: Alice
+:title: Alice's Wonderland
+:description: HTTP based social media and simplicity enthusiast
+:page: ideas.adoc
+:page: projects.md
+
 ```
 
 Unlisted pages are not discoverable and only reachable if the link is known. You could call it a pseudo private page.
-
 
