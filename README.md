@@ -36,7 +36,7 @@ plaintext.casa doesn't need any tools. In fact, the format is meant to be easily
 
 ### Document header
 
-Start by creating the file in the format of your choice, for example: `feed.md`, `feed.org` or `feed.adoc` and add some meta data to it. Only `title` and `nick` are required, but more fields are supported by default. Some fields can appear multiple times:
+Start by creating the file in the format of your choice, for example: `feed.md`, `feed.org` or `feed.adoc` and add some meta data to it. Only `title` and `author` (or `nick`) are required, but more fields are supported by default. Some fields can appear multiple times:
 
 |   Field     |                                 Description                                     | Multiple | Required |
 | ----------- | ------------------------------------------------------------------------------- | -------- | -------- |
