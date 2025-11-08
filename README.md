@@ -12,19 +12,15 @@ A decentralized social network that uses plain text files over HTTP. Decoupling 
 
 *The author determines the content, the reader determines its presentation.*
 
-Inspired by [Org Social](https://github.com/tanrax/org-social), twtxt and others, plaintext.casa is a decentralized
-social network that is as simple and flexible as writing blog posts with a static page generator, maybe even simpler.
+Inspired by [Org Social](https://github.com/tanrax/org-social), twtxt and others, plaintext.casa is a decentralized social network that is as simple and flexible as writing blog posts with a static page generator, maybe even simpler.
 
 Other than the mentioned formats, plaintext.casa does not use a fixed file format but instead suggests shapes for different plain text formats like Markdown, Org, AsciiDoc or txt. Thanks to its flexibility, plaintext.casa will at least initially support Org Social feeds as well, but future compatibility is neither guaranteed nor planned.
 
-plaintext.casa is meant to be easy to read and write by both humans and machines. Anyone who can host at least one
-file in a way that is reachable by the rest of the internet should be able to use all the features, with or without
-tooling that goes beyond any simple text editor.
+plaintext.casa is meant to be easy to read and write by both humans and machines. Anyone who can host at least one file in a way that is reachable by the rest of the internet should be able to use all the features, with or without tooling that goes beyond any simple text editor.
 
 # First steps
 
-All you need to use plaintext.casa is a place to publicly host at least one file, preferably with your own domain. As
-long as the domain remains the same, other users can subscribe to your feed, by adding it to their follows-list.
+All you need to use plaintext.casa is a place to publicly host at least one file, preferably with your own domain. As long as the domain remains the same, other users can subscribe to your feed, by adding it to their follows-list.
 
 ## Manual creation
 
@@ -40,15 +36,13 @@ plaintext.casa doesn't need any tools. In fact, the format is meant to be easily
 
 ### Document header
 
-Start by creating the file in the format of your choice, for example: `feed.md`, `feed.org` or `feed.adoc` and add some
-meta data to it. Only `title` and `nick` are required, but more fields are supported by default. Some fields can appear
-multiple times:
+Start by creating the file in the format of your choice, for example: `feed.md`, `feed.org` or `feed.adoc` and add some meta data to it. Only `title` and `nick` are required, but more fields are supported by default. Some fields can appear multiple times:
 
 |   Field     |                                 Description                                     | Multiple | Required |
 | ----------- | ------------------------------------------------------------------------------- | -------- | -------- |
 | title       | The title of your social feed                                                   |  ✘       |  ✔       |
-| author      | Your nickname. This will be displayed in posts.                                 |  ✘       |  ✔/✘*       |
-| nick        | Your nickname. Alias for author.                                 |  ✘       |  ✔/✘*       |
+| author      | Your nickname. This will be displayed in posts.                                 |  ✘       |  ✔/✘*    |
+| nick        | Your nickname. Alias for author.                                                |  ✘       |  ✔/✘*    |
 | description | A short description about you or your feed.                                     |  ✘       |  ✘       |
 | lang        | ISO 639-1 or -2 code of the typical language used. Can be changed per post.     |  ✘       |  ✘       |
 | avatar      | The URL of your avatar image. Org social has some constraints here, we do not.  |  ✘       |  ✘       |
@@ -63,13 +57,11 @@ The feed title can be defined either as level one title (like, `# The Title` in 
 
 More fields can be added. They might or might not be supported by whatever tooling others use. In the latter case the tool should simply show them as text fields and otherwise ignore them.
 
-Depending on the format, the header might be formatted differently. Org-mode files should be formatted just like
-Org-Social suggests. AsciiDoc files should use AsciiDoc's Document Headers. Markdown has no build-in support for meta data, so plaintext.casa comes with its own format for it, that is heavily inspired by AsciiDoc's. See the [examples folder](/examples) for all supported formats and their specifics.
+Depending on the format, the header might be formatted differently. Org-mode files should be formatted just like Org-Social suggests. AsciiDoc files should use AsciiDoc's Document Headers. Markdown has no build-in support for meta data, so plaintext.casa comes with its own format for it, that is heavily inspired by AsciiDoc's. See the [examples folder](/examples) for all supported formats and their specifics.
 
 ### About section
 
-After the feed meta data follows an optional about section. This is just like a post but without meta data. It can
-be shown as extended introduction, kind of like an about page. Specialised clients might handle it in their own way.
+After the feed meta data follows an optional about section. This is just like a post but without meta data. It can be shown as extended introduction, kind of like an about page. Specialised clients might handle it in their own way.
 
 ### Posts
 
@@ -77,19 +69,18 @@ Then posts follow, ordered by time of creation, with the newest post last. Posts
 
 Following fields are supported by default:
 
-|   Field     |                              Description                           | Example               | Required |
-| ----------- | ------------------------------------------------------------------ | --------------------- | -------- |
+|   Field     |                              Description                           | Example                 | Required |
+| ----------- | ------------------------------------------------------------------ | ----------------------- | -------- |
 | id          | Unique identifier, use an RFC 3339 formatted timestamp for Social Org compatibility | `my-first-post` or `2025-11-11T12:00:00+0100` | ✔ |
 | lang        | The language used in this post. Use [ISO 639-1](https://www.loc.gov/standards/iso639-2/php/code_list.php) | `en`,`de`,`sw`,`art`,`tlh` | ✘ |
-| tags        | space-separated tags                                               | `plaintext social feed` |  ✘     |
+| tags        | space-separated tags                                               | `plaintext social feed` |  ✘       |
 | reply_to    | ID of post being replied to. Format: `URL`+`#`+`ID`                | `https://foo.tld/plaintext.casa/feed.adoc#my-first-post` | ✘ |
 | mood        | Mood indicator, either as emoji or plaintext.                      | `😊`,`❤`,`🚀`           |  ✘       |
-| content_warning | To give any kind of content warning                    | `clickbait`           |  ✘       |
+| content_warning | To give any kind of content warning                            | `clickbait`             |  ✘       |
 
 Just like with the feed meta data, additional fields are allowed, but might not be interpreted by any tooling.
 
-Post meta data is followed by the actual post content in the format of your choice. Here is a full example in AsciiDoc, showing Alice's Wonderland by Alice.
-
+Post meta data is followed by the actual post content in the format of your choice. Here is a full example in AsciiDoc:
 
 ```adoc
 = Alice's Wonderland
@@ -132,15 +123,13 @@ Ja, ich spreche auch Deutsch, wenn ich will!
 Yes, I totally agree with that very detailled and specific post of yours.
 ```
 
-Notice, that markdown uses four dashes for separation here. This is meant as a backwards compatible extension to the
-format, that would just be parsed as horizontal rule by other parsers.
+Notice, that markdown uses four dashes for separation here. This is meant as a backwards compatible extension to the format, that would just be parsed as horizontal rule by other parsers.
 
 See more formats in the [examples](/examples) folder.
 
 # Pages
 
-plaintext.casa supports an additional way of structuring your posts, similar to Org Social's groups, but more flexible.
-While a single file might be enough for most, it is possible to have additional files that could be called pages,
+plaintext.casa supports an additional way of structuring your posts, similar to Org Social's groups. While a single file might be enough for most, it is possible to have additional files that could be called pages,
 groups or categories. The file tree might then look like this:
 
 ```
@@ -161,5 +150,5 @@ To make categories discoverable, they need to be added to your feeds meta data (
 
 ```
 
-Unlisted pages are not discoverable and only reachable if the link is known. You could call it a pseudo private page.
+Unlisted pages are not discoverable and only reachable if the name (and therefore link) is known. You could call it a private page, but better don't use it for sensitive information.
 
