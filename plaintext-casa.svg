@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="200px" height="200px">
-  <ellipse fill="none" stroke="black" stroke-width="2" cx="250" cy="260.451" rx="58.19" ry="58.19"/>
-  <ellipse fill="none" stroke="black" stroke-width="2" cx="394.262" cy="58.921" rx="58.19" ry="58.19"/>
-  <ellipse fill="none" stroke="black" stroke-width="2" cx="58.611" cy="155.635" rx="58.19" ry="58.19"/>
-  <ellipse fill="none" stroke="black" stroke-width="2" cx="96.256" cy="412.72" rx="58.19" ry="58.19"/>
-  <ellipse fill="none" stroke="black" stroke-width="2" cx="333.604" cy="441.584" rx="58.19" ry="58.19"/>
-  <ellipse fill="none" stroke="black" stroke-width="2" cx="438.541" cy="289.707" rx="58.19" ry="58.19"/>
-  <text fill="#777777" text-anchor="middle" font-size="100" x="55.997" y="191.581">#</text>
-  <text fill="#777777" text-anchor="middle" font-size="100" x="249.02" y="295.696">#</text>
-  <text fill="#777777" text-anchor="middle" font-size="100" x="394.376" y="93.895">#</text>
-  <text fill="#777777" text-anchor="middle" font-size="100" x="438" y="324.688">#</text>
-  <text fill="#777777" text-anchor="middle" font-size="100" x="333.007" y="475.695">#</text>
-  <text fill="#777777" text-anchor="middle" font-size="100" x="95.018" y="447.132">#</text>
-  <path stroke="black" stroke-width="2" stroke-dasharray="20" d="M 111.129 181.582 L 197.837 232.354"/>
-  <path stroke="black" stroke-width="2" stroke-dasharray="20" d="M 208.985 301.51 L 136.475 369.539"/>
-  <path stroke="black" stroke-width="2" stroke-dasharray="20" d="M 307.403 267.151 L 380.923 277.973"/>
-  <path stroke="black" stroke-width="2" stroke-dasharray="20" d="M 280.772 210.921 L 356.336 101.533"/>
-  <path stroke="black" stroke-width="2" stroke-dasharray="20" d="M 278.572 310.635 C 278.572 310.635 309.642 388.3 309.172 387.283"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+
+  <!-- center -->
+  <ellipse fill="none" stroke="#878787" stroke-width="2" cx="250" cy="260.451" rx="58.19" ry="58.19"/>
+  <text fill="#A08794" text-anchor="middle" font-size="100" x="249.02" y="295.696">#</text>
+
+  <!-- top -->
+  <ellipse fill="none" stroke="#a08794" stroke-width="2" cx="394.262" cy="58.921" rx="58.19" ry="58.19"/>
+  <text fill="#BB7E8E" text-anchor="middle" font-size="100" x="394.376" y="93.895">#</text>
+  <path stroke="#878787" stroke-width="2" stroke-dasharray="20" d="M 280.772 210.921 L 356.336 101.533"/>
+
+  <!-- onwards clockwise -->
+  <ellipse fill="none" stroke="#D5C4D3" stroke-width="2" cx="438.541" cy="289.707" rx="58.19" ry="58.19"/>
+  <text fill="#C9B6BE" text-anchor="middle" font-size="100" x="438" y="324.688">#</text>
+  <path stroke="#C9B6BE" stroke-width="2" stroke-dasharray="20" d="M 307.403 267.151 L 380.923 277.973"/>
+
+  <ellipse fill="none" stroke="#D1BECF" stroke-width="2" cx="333.604" cy="441.584" rx="58.19" ry="58.19"/>
+  <text fill="#D5C4D3" text-anchor="middle" font-size="100" x="333.007" y="475.695">#</text>
+  <path stroke="#D1BECF" stroke-width="2" stroke-dasharray="20" d="M 278.572 310.635 C 278.572 310.635 309.642 388.3 309.172 387.283"/>
+
+  <ellipse fill="none" stroke="#c9b6be" stroke-width="2" cx="96.256" cy="412.72" rx="58.19" ry="58.19"/>
+  <text fill="#D1BECF" text-anchor="middle" font-size="100" x="95.018" y="447.132">#</text>
+  <path stroke="#C9B6BE" stroke-width="2" stroke-dasharray="20" d="M 208.985 301.51 L 136.475 369.539"/>
+
+  <ellipse fill="none" stroke="#BB7E8E" stroke-width="2" cx="58.611" cy="155.635" rx="58.19" ry="58.19"/>
+  <text fill="#878787" text-anchor="middle" font-size="100" x="55.997" y="191.581">#</text>
+  <path stroke="#BB7E8E" stroke-width="2" stroke-dasharray="20" d="M 111.129 181.582 L 197.837 232.354"/>
+
 </svg>
