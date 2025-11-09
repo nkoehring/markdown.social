@@ -2,11 +2,7 @@
 
 A decentralized social network that uses plain text files over HTTP. Decoupling content and presentation.
 
-<div style="width: 100%; height: 300px; text-align: center;">
-
 ![plaintext-casa-logo](plaintext-casa.svg)
-
-</div>
 
 ---
 
