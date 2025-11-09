@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="200px" height="200px">
   <ellipse fill="none" stroke="black" stroke-width="2" cx="250" cy="260.451" rx="58.19" ry="58.19"/>
   <ellipse fill="none" stroke="black" stroke-width="2" cx="394.262" cy="58.921" rx="58.19" ry="58.19"/>
   <ellipse fill="none" stroke="black" stroke-width="2" cx="58.611" cy="155.635" rx="58.19" ry="58.19"/>
