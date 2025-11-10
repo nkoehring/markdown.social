@@ -1,4 +1,12 @@
 declare global {
+  type Severity = 'debug' | 'info' | 'warning' | 'error'
+
+  interface DebugMessage {
+    line: number
+    message: string
+    severity: Severity
+  }
+
   interface Post {
     id: string
     lang: string
@@ -23,6 +31,9 @@ declare global {
     pages: URL[]
     posts: Post[]
   }
+
+  // for use with type guard
+  type Rfc3339Date = string
   
 }
 
