@@ -1,10 +1,16 @@
 import { warnMsg, errMsg } from './util'
 
+interface ParserResult<T> {
+  content: T
+  warnings: DebugMessage[]
+  errors: DebugMessage[]
+}
+
 interface FieldConfig {
   label: string
   multi?: boolean
   required?: boolean
-  url?: boolean
+  alias?: string
 }
 
 export interface ParserConfig {
@@ -12,26 +18,55 @@ export interface ParserConfig {
   debug: boolean
 }
 
+  const feed: Feed = {
+    title: '',
+    author: '',
+    description: '',
+    lang: null,
+    avatar: null,
+    links: [],
+    follows: [],
+    pages: [],
+    posts: [],
+  }
+
+export const defaultConfig: ParserConfig = Object.freeze({
+  fields: [
+    { label: 'title', required: true },
+    { label: 'author', required: true, alias: 'nick' },
+    { label: 'description', required: false },
+    { label: 'lang', required: false },
+    { label: 'avatar', required: false },
+    { label: 'links', required: false, multi: true },
+    { label: 'follows', required: false, multi: true },
+    { label: 'pages', required: false, multi: true },
+    { label: 'posts', required: false, multi: true },
+  ],
+  debug: true,
+})
+
 interface ParsedMetaData {
-  [key: string]: string | string[] | URL | URL[]
+  [key: string]: string | string[]
 }
 
 const metaDataRegex = new RegExp(/^:([^:]+):\s*(.*)$/)
 const allowedTitleMarkers = ['# ', '= ']
 
-export function parseHeader(headerLines: string[], config: ParserConfig): ParsedHeader {
-  const result: ParsedHeader = {}
+export function parseHeader(
+  headerLines: string[],
+  config: ParserConfig,
+): ParserResult {
+  const content: ParsedHeader = {}
   const warnings: DebugMessage[] = []
   const errors: DebugMessage[] = []
   const { fields, debug } = config
 
   const singleFields = fields.filter(f => !f.multi).map(f => f.label)
   const multiFields = fields.filter(f => f.multi).map(f => f.label)
-  const requiredFields = fields.filter(f => f.required).map(f => f.label)
-  const urlFields = fields.filter(f => f.url).map(f => f.label)
+  const requiredFields = fields.filter(f => f.required)
 
   // Initialize multi-fields with empty arrays
-  multiFields.forEach(field => result[`${field}s`] = [])
+  multiFields.forEach(field => content[`${field}s`] = [])
 
   let lineIdx = 0
 
@@ -39,7 +74,7 @@ export function parseHeader(headerLines: string[], config: ParserConfig): Parsed
   // that is formatted in its native format
   const firstChars = headerLines[0].slice(0,2)
   if (allowedTitleMarkers.includes(firstChars)) {
-    result['title'] = headerLines.shift().slice(2)
+    content['title'] = headerLines.shift().slice(2)
     lineIdx++
   }
 
@@ -54,67 +89,37 @@ export function parseHeader(headerLines: string[], config: ParserConfig): Parsed
     const value = match[2].trim()
 
     if (singleFields.includes(key)) {
-      if (debug && result.hasOwnProperty(key)) {
+      if (debug && content.hasOwnProperty(key)) {
         // if single key appear multiple times, last occurence wins
         warnings.push(warnMsg(
           `Field "${key} marked as single, but appeared multiple times!"`,
           lineIdx
         ))
       }
-      // parse URLs
-      if (urlFields.includes(key)) {
-        try {
-          const url = new URL(value)
-          result[key] = url
-        } catch {
-          errors.push(errMsg(`Field "${key} expected URL"`, lineIdx))
-        }
-      } else {
-        result[key] = value
-      }
+      content[key] = value
     } else if (multiFields.includes(key)) {
-      if (urlFields.includes(key)) {
-        try {
-          const url = new URL(value)
-          ;(result[`${key}s`] as string[]).push(url)
-        } catch(err) {
-          errors.push(errMsg(`Field "${key}" expected URL. ${err}`, lineIdx))
-        }
-      } else {
-        ;(result[`${key}s`] as string[]).push(value)
-      }
+      ;(content[`${key}s`] as string[]).push(value)
     } else {
       // Unknown fields are treatet as simple string fields
-      result[key] = value
+      content[key] = value
     }
   }
 
-  const foundFields = Object.keys(result)
-  for (const field of requiredFields) {
-    if (foundFields.includes(field)) continue
-    errors.push(errMsg(`Required field "${field}" not defined!`))
+  const foundFields = Object.keys(content)
+  for (const { label, alias } of requiredFields) {
+    if (foundFields.includes(label)) continue
+    if (foundFields.includes(alias)) {
+      content[label] = content[alias]
+      delete content[alias]
+      continue
+    }
+    errors.push(errMsg(`Required field "${label}" not defined!`))
   }
 
-  return { result, warnings, errors }
-}
-
-function parseField(line: string): { field: string, value: string } {
-  const [_1, field, _2, value] = line.split(':')
-  return { field, value: value.trim() }
+  return { content, warnings, errors }
 }
 
 function parseFromRaw(raw: string): Feed {
-  const feed: Feed = {
-    title: '',
-    author: '',
-    description: '',
-    lang: null,
-    avatar: null,
-    links: [],
-    follows: [],
-    pages: [],
-    posts: [],
-  }
 
   const lines = raw.split('\n')
   const headerLines: string[] = []
@@ -149,6 +154,8 @@ function parseFromRaw(raw: string): Feed {
         break
     }
   })
+
+  const result = parseHeader(headerLines, parserConfig)
 
   return { headerLines, aboutLines, posts }
 }
