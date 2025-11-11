@@ -30,7 +30,7 @@ export interface ParserConfig {
     posts: [],
   }
 
-export const defaultConfig: ParserConfig = Object.freeze({
+export const defaultConfigFeed: ParserConfig = Object.freeze({
   fields: [
     { label: 'title', required: true },
     { label: 'author', required: true, alias: 'nick' },
@@ -45,6 +45,17 @@ export const defaultConfig: ParserConfig = Object.freeze({
   debug: true,
 })
 
+export const defaultConfigPost: ParserConfig = Object.freeze({
+  fields: [
+    { label: 'id', required: true },
+    { label: 'lang', required: false },
+    { label: 'tags', required: false },
+    { label: 'mood', required: false },
+    { label: 'content_warning', required: false },
+  ],
+  debug: true,
+})
+
 interface ParsedMetaData {
   [key: string]: string | string[]
 }
@@ -55,8 +66,8 @@ const allowedTitleMarkers = ['# ', '= ']
 export function parseHeader(
   headerLines: string[],
   config: ParserConfig,
-): ParserResult {
-  const content: ParsedHeader = {}
+): ParserResult<ParsedMetaData> {
+  const content: ParsedMetaData = {}
   const warnings: DebugMessage[] = []
   const errors: DebugMessage[] = []
   const { fields, debug } = config
@@ -119,8 +130,11 @@ export function parseHeader(
   return { content, warnings, errors }
 }
 
-function parseFromRaw(raw: string): Feed {
-
+export function parseFromRaw(
+  raw: string,
+  feedConfig = defaultConfigFeed,
+  postConfig = defaultConfigPost,
+): Feed {
   const lines = raw.split('\n')
   const headerLines: string[] = []
   const aboutLines: string[] = []
@@ -155,7 +169,29 @@ function parseFromRaw(raw: string): Feed {
     }
   })
 
-  const result = parseHeader(headerLines, parserConfig)
+  const parsedDocumentHeader = parseHeader(headerLines, feedConfig)
+  const parsedAboutSection = aboutLines.join('\n').trim()
+  const parsedPosts = posts.map(({ metaLines, contentLines }) => {
+    const header = parseHeader(metaLines, postConfig)
+    const content = contentLines.join('\n').trim()
+    return { header, content }
+  })
 
-  return { headerLines, aboutLines, posts }
+  const warnings = {
+    header: parsedDocumentHeader.warnings,
+    posts: parsedPosts.map(p => p.header.warnings),
+  }
+
+  const errors = {
+    header: parsedDocumentHeader.errors,
+    posts: parsedPosts.map(p => p.header.errors),
+  }
+
+  return {
+    header: parsedDocumentHeader.content,
+    about: parsedAboutSection,
+    posts: parsedPosts.map(p => p.content),
+    warnings,
+    errors,
+  }
 }

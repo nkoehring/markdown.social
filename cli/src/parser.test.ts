@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { parseHeader } from './parser'
+import { parseHeader, parseFromRaw } from './parser'
 
 const headerPlain = `:title: Alice's Wonderland
 :description: HTTP based social media and simplicity enthusiast
@@ -25,6 +25,26 @@ const headerWithHeader = `# Alice's Wonderland
 const headerWithAlias = `:title: Alice's Wonderland
 :nick: Alice
 :description: HTTP based social media and simplicity enthusiast
+`
+
+const feedPlain = `${headerPlain}
+
+About me!
+Yeah!
+
+And another line.
+
+**
+:id: 2025-10-26T17:27:00Z
+:lang: de
+:mood: 😜
+
+Ja, ich spreche auch Deutsch, wenn ich will!
+
+**
+:id: 2025-10-26T18:10:00Z
+
+Another post
 `
 
 const parserConfig = {
@@ -104,5 +124,24 @@ describe("Parser", () => {
       author: 'Alice',
       description: 'HTTP based social media and simplicity enthusiast',
     })
+  })
+
+  test("document parsing with default config", () => {
+    const { header, about, posts, warnings, errors } = parseFromRaw(feedPlain)
+
+    expect(warnings).toEqual({
+      header: [],
+      posts: [[], []],
+    })
+    expect(errors).toEqual({
+      header: [],
+      posts: [[], []],
+    })
+    expect(header).toMatchObject({})
+    expect(about).toEqual('About me!\nYeah!\n\nAnd another line.')
+    expect(posts).toEqual([
+      'Ja, ich spreche auch Deutsch, wenn ich will!',
+      'Another post',
+    ])
   })
 })
