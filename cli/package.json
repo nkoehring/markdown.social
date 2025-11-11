@@ -13,7 +13,8 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "markdown-it": "^14.1.0",
+    "marked": "^17.0.0",
+    "marked-terminal": "^7.3.0",
     "meow": "^14.0.0"
   }
 }

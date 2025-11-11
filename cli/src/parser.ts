@@ -18,18 +18,6 @@ export interface ParserConfig {
   debug: boolean
 }
 
-  const feed: Feed = {
-    title: '',
-    author: '',
-    description: '',
-    lang: null,
-    avatar: null,
-    links: [],
-    follows: [],
-    pages: [],
-    posts: [],
-  }
-
 export const defaultConfigFeed: ParserConfig = Object.freeze({
   fields: [
     { label: 'title', required: true },
@@ -37,10 +25,9 @@ export const defaultConfigFeed: ParserConfig = Object.freeze({
     { label: 'description', required: false },
     { label: 'lang', required: false },
     { label: 'avatar', required: false },
-    { label: 'links', required: false, multi: true },
-    { label: 'follows', required: false, multi: true },
-    { label: 'pages', required: false, multi: true },
-    { label: 'posts', required: false, multi: true },
+    { label: 'link', required: false, multi: true },
+    { label: 'follow', required: false, multi: true },
+    { label: 'page', required: false, multi: true },
   ],
   debug: true,
 })
@@ -134,7 +121,7 @@ export function parseFromRaw(
   raw: string,
   feedConfig = defaultConfigFeed,
   postConfig = defaultConfigPost,
-): Feed {
+): ParserResult<Feed> {
   const lines = raw.split('\n')
   const headerLines: string[] = []
   const aboutLines: string[] = []
@@ -188,9 +175,14 @@ export function parseFromRaw(
   }
 
   return {
-    header: parsedDocumentHeader.content,
-    about: parsedAboutSection,
-    posts: parsedPosts.map(p => p.content),
+    content: {
+      ...parsedDocumentHeader.content,
+      about: parsedAboutSection,
+      posts: parsedPosts.map(p => ({
+        ...p.header.content,
+        content: p.content,
+      })),
+    },
     warnings,
     errors,
   }

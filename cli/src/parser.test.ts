@@ -27,7 +27,9 @@ const headerWithAlias = `:title: Alice's Wonderland
 :description: HTTP based social media and simplicity enthusiast
 `
 
-const feedPlain = `${headerPlain}
+const feedPlain = `:title: A complete feed
+:author: Bob
+:description: A whole lot of feed!
 
 About me!
 Yeah!
@@ -127,7 +129,7 @@ describe("Parser", () => {
   })
 
   test("document parsing with default config", () => {
-    const { header, about, posts, warnings, errors } = parseFromRaw(feedPlain)
+    const { content, warnings, errors } = parseFromRaw(feedPlain)
 
     expect(warnings).toEqual({
       header: [],
@@ -137,11 +139,20 @@ describe("Parser", () => {
       header: [],
       posts: [[], []],
     })
-    expect(header).toMatchObject({})
-    expect(about).toEqual('About me!\nYeah!\n\nAnd another line.')
-    expect(posts).toEqual([
-      'Ja, ich spreche auch Deutsch, wenn ich will!',
-      'Another post',
-    ])
+    expect(content.title).toEqual('A complete feed')
+    expect(content.author).toEqual('Bob')
+    expect(content.description).toEqual('A whole lot of feed!')
+    expect(content.about).toEqual('About me!\nYeah!\n\nAnd another line.')
+    expect(content.posts.length).toEqual(2)
+    expect(content.posts[0]).toMatchObject({
+      id: '2025-10-26T17:27:00Z',
+      lang: 'de',
+      mood: '😜',
+      content: 'Ja, ich spreche auch Deutsch, wenn ich will!',
+    })
+    expect(content.posts[1]).toMatchObject({
+      id: '2025-10-26T18:10:00Z',
+      content: 'Another post',
+    })
   })
 })

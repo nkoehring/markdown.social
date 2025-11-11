@@ -13,7 +13,7 @@ declare global {
     tags: string[]
     reply_to: URL
     mood: string
-    contentWarning: string
+    content_warning: string
     content: string
   }
 
@@ -22,13 +22,14 @@ declare global {
     author: string
     description: string
     lang: string | null
-    avatar: URL | null
-    links: URL[]
+    avatar: string | null
+    links: string[]
     follows: {
       name: string
-      url: URL
+      url: string
     }[]
-    pages: URL[]
+    pages: string[]
+    about: string
     posts: Post[]
   }
 

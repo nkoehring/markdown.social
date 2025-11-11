@@ -1,7 +1,9 @@
-import fs from 'fs';
-import { pipeline } from 'node:stream/promises';
+import fs from 'fs'
+import { resolve } from 'path'
+import { pipeline } from 'node:stream/promises'
 import meow from 'meow'
 import parseFeed from './lib'
+import { renderMarkdownFeed } from './src/cli-renderer'
 
 const cli = meow(
   `
@@ -36,7 +38,8 @@ if (!filePath) {
 }
 
 async function readFeedFile(filePath: string) {
-  const readStream = fs.createReadStream(filePath, { encoding: 'utf8' })
+  const absPath = resolve(filePath)
+  const readStream = fs.createReadStream(absPath, { encoding: 'utf8' })
   const chunks: string[] = []
 
   try {
@@ -45,9 +48,12 @@ async function readFeedFile(filePath: string) {
     const fileFormat = filePath.split('.').at(-1)
     const parsedFeed = parseFeed(rawFeed, fileFormat)
 
-    console.log(parseFeed(chunks.join()))
+    // TODO: handle errors and warnings?
+    const renderedFeed = renderMarkdownFeed(parsedFeed.content)
+    console.log(renderedFeed)
+
   } catch(err) {
-    console.error('Failed to read feed at', filePath, err.code)
+    console.error('Failed to read feed at', absPath, err)
     process.exit(1)
   }
 }
