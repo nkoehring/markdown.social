@@ -11,4 +11,3 @@ describe('utils', () => {
     expect(isRfc3339Date('20251010T100000Z')).toBe(false)
   })
 })
-

@@ -21,11 +21,11 @@ const cli = meow(
     importMeta: import.meta,
     flags: {
       feed: {
-        type: "string",
-        shortFlag: "f",
+        type: 'string',
+        shortFlag: 'f',
       },
     },
-  }
+  },
 )
 
 const filePath = cli.input.at(0)
@@ -49,10 +49,9 @@ async function readFeedFile(filePath: string) {
     const parsedFeed = parseFeed(rawFeed, fileFormat)
 
     // TODO: handle errors and warnings?
-    const renderedFeed = renderMarkdownFeed(parsedFeed.content)
+    const renderedFeed = await renderMarkdownFeed(parsedFeed.feed)
     console.log(renderedFeed)
-
-  } catch(err) {
+  } catch (err) {
     console.error('Failed to read feed at', absPath, err)
     process.exit(1)
   }

@@ -1,4 +1,10 @@
-export function debugMsg(message: string, line = -1, severity?: Severity): DebugMessage {
+import type { Severity, DebugMessage, Rfc3339Date } from './types'
+
+export function debugMsg(
+  message: string,
+  line = -1,
+  severity?: Severity,
+): DebugMessage {
   return { message, line, severity: severity ?? 'debug' }
 }
 export function infoMsg(msg: string, line?: number) {
@@ -13,7 +19,9 @@ export function errMsg(msg: string, line?: number) {
 
 /// checks if given string is of format YYYY-MM-DDTHH:MM:SS+TZ
 export function isRfc3339Date(s: string): s is Rfc3339Date {
-  const match = s.match(/^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(Z|[\+-]?[0-9]{2}:[0-9]{2})$/)
+  const match = s.match(
+    /^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(Z|[\+-]?[0-9]{2}:[0-9]{2})$/,
+  )
 
   return !!match
 }

@@ -60,15 +60,15 @@ const parserConfig = {
   debug: true,
 }
 
-describe("Parser", () => {
-  test("plain header parsing without errors", () => {
+describe('Parser', () => {
+  test('plain header parsing without errors', () => {
     const headerLines = headerPlain.split('\n')
     const { content, warnings, errors } = parseHeader(headerLines, parserConfig)
 
     expect(warnings).toEqual([])
     expect(errors).toEqual([])
     expect(content).toMatchObject({
-      title: 'Alice\'s Wonderland',
+      title: "Alice's Wonderland",
       author: 'Alice',
       description: 'HTTP based social media and simplicity enthusiast',
       lang: 'en',
@@ -86,7 +86,7 @@ describe("Parser", () => {
     })
   })
 
-  test("header parsing error missing field", () => {
+  test('header parsing error missing field', () => {
     const headerLines = headerMissingFields.split('\n')
     const { content, warnings, errors } = parseHeader(headerLines, parserConfig)
 
@@ -102,34 +102,34 @@ describe("Parser", () => {
     })
   })
 
-  test("header parsing with markdown title", () => {
+  test('header parsing with markdown title', () => {
     const headerLines = headerWithHeader.split('\n')
     const { content, warnings, errors } = parseHeader(headerLines, parserConfig)
 
     expect(warnings).toEqual([])
     expect(errors).toEqual([])
     expect(content).toMatchObject({
-      title: 'Alice\'s Wonderland',
+      title: "Alice's Wonderland",
       author: 'Alice',
       description: 'HTTP based social media and simplicity enthusiast',
     })
   })
 
-  test("header parsing with alias", () => {
+  test('header parsing with alias', () => {
     const headerLines = headerWithAlias.split('\n')
     const { content, warnings, errors } = parseHeader(headerLines, parserConfig)
 
     expect(warnings).toEqual([])
     expect(errors).toEqual([])
     expect(content).toMatchObject({
-      title: 'Alice\'s Wonderland',
+      title: "Alice's Wonderland",
       author: 'Alice',
       description: 'HTTP based social media and simplicity enthusiast',
     })
   })
 
-  test("document parsing with default config", () => {
-    const { content, warnings, errors } = parseFromRaw(feedPlain)
+  test('document parsing with default config', () => {
+    const { feed, warnings, errors } = parseFromRaw(feedPlain)
 
     expect(warnings).toEqual({
       header: [],
@@ -139,18 +139,18 @@ describe("Parser", () => {
       header: [],
       posts: [[], []],
     })
-    expect(content.title).toEqual('A complete feed')
-    expect(content.author).toEqual('Bob')
-    expect(content.description).toEqual('A whole lot of feed!')
-    expect(content.about).toEqual('About me!\nYeah!\n\nAnd another line.')
-    expect(content.posts.length).toEqual(2)
-    expect(content.posts[0]).toMatchObject({
+    expect(feed.title).toEqual('A complete feed')
+    expect(feed.author).toEqual('Bob')
+    expect(feed.description).toEqual('A whole lot of feed!')
+    expect(feed.about).toEqual('About me!\nYeah!\n\nAnd another line.')
+    expect(feed.posts.length).toEqual(2)
+    expect(feed.posts[0]).toMatchObject({
       id: '2025-10-26T17:27:00Z',
       lang: 'de',
       mood: '😜',
       content: 'Ja, ich spreche auch Deutsch, wenn ich will!',
     })
-    expect(content.posts[1]).toMatchObject({
+    expect(feed.posts[1]).toMatchObject({
       id: '2025-10-26T18:10:00Z',
       content: 'Another post',
     })
