@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build ./cli.ts --compile --outfile casa",
+    "build": "bun build ./cli.ts --minify --compile --outfile casa",
     "type-check": "tsc --noEmit -p tsconfig.json --composite false"
   },
   "devDependencies": {

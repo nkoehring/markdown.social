@@ -23,10 +23,7 @@ export interface Feed {
   lang: string | null
   avatar: string | null
   links: string[]
-  follows: {
-    name: string
-    url: string
-  }[]
+  follows: string[]
   pages: string[]
   about: string
   posts: Post[]
