@@ -6,14 +6,16 @@ plaintext.casa CLI v0.1 -- A command-line tool for viewing and assembling timeli
 - **Parse plaintext.casa feeds** in Markdown format
 - **Assemble timelines** by combining your posts with posts from all followed feeds
 - **Fetch remote feeds** via HTTP(S) (or local file:// URLs for testing)
+- **Add new posts** to your feed with automatic timestamp IDs
 - **Rich terminal output** with markdown rendering, including formatted tables and syntax highlighting
 
 ## Planned Features
 
-- Feed path can be a URL
+- Feed path can be a URL (readonly, of course)
 - Configuration file to set default feed path
 - Pages (multi file feeds)
 - Feeds in multiple formats (Org, AsciiDoc, txt) via converters
+- Interactive post creation with tag and mood selector
 
 ## Installation
 
@@ -43,6 +45,25 @@ This will:
 3. Combine all posts and sort them by date (newest last)
 4. Display the timeline in your terminal
 
+### Add a New Post
+
+To add a new post to your feed:
+
+```bash
+casa --add feed.md
+```
+
+The new post template looks like:
+```markdown
+**
+:id: 2025-12-07T15:00:00.000Z
+
+Write your post content here...
+```
+
+and try to open $EDITOR to allow editing the post right away.
+
+
 ### View Feed Only
 
 To view just your own feed without fetching followed feeds:
@@ -62,11 +83,13 @@ Options
   --version              Displays the version number
   --timeline             Show your timeline (default)
   --feed-only            Show only the feed without timeline assembly
+  --add                  Add a new post to the feed and open in editor
 
 Examples
   $ casa feed.md
   $ casa --timeline feed.md
   $ casa --feed-only feed.md
+  $ casa --add feed.md
 ```
 
 ## Building
