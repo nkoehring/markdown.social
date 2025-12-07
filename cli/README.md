@@ -12,6 +12,7 @@ plaintext.casa CLI v0.1 -- A command-line tool for viewing and assembling timeli
 
 - Feed path can be a URL
 - Configuration file to set default feed path
+- Pages (multi file feeds)
 - Feeds in multiple formats (Org, AsciiDoc, txt) via converters
 
 ## Installation
