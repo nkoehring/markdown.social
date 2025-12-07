@@ -91,6 +91,7 @@ function timelinePostToMd(post: TimelinePost): string {
   md += '|---|---|\n'
   md += `| 🆔 | ${post.id} |\n`
 
+  if (post.date) md += `| ⌚ | ${post.date} |\n`
   if (post.feedUrl) md += `| 🔗 | ${post.feedUrl} |\n`
   if (post.lang) md += `| 🌐 | ${post.lang} |\n`
   if (post.tags) md += `| ♯ | #${post.tags.split(' ').join(' #')} |\n`

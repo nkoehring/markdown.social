@@ -8,6 +8,7 @@ export interface DebugMessage {
 
 export interface Post {
   id: string
+  date?: string
   lang: string
   tags: string
   reply_to: URL

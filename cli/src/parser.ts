@@ -48,6 +48,7 @@ export const defaultConfigFeed: ParserConfig = Object.freeze({
 export const defaultConfigPost: ParserConfig = Object.freeze({
   fields: [
     { label: 'id', required: true },
+    { label: 'date', required: false },
     { label: 'lang', required: false },
     { label: 'tags', required: false },
     { label: 'mood', required: false },

@@ -8,6 +8,7 @@ export interface TimelinePost extends Post {
   feedAuthor: string
   givenName?: string
   feedUrl?: string
+  fetchedAt: Date
 }
 
 export interface TimelineResult {
@@ -108,32 +109,50 @@ function extractPostsFromFeed(
   feedUrl?: string,
   givenName?: string,
 ): TimelinePost[] {
+  const fetchedAt = new Date()
   return feed.posts.map((post) => ({
     ...post,
     feedTitle: feed.title,
     feedAuthor: feed.author,
     feedUrl,
     givenName,
+    fetchedAt,
   }))
 }
 
 /**
- * Sorts posts by their ID (assuming RFC 3339 timestamp format)
- * Falls back to string comparison if not a valid timestamp
+ * Gets the date to use for sorting a post
+ * Priority: 1) date field, 2) id if valid date, 3) fetchedAt time
+ */
+function getPostSortDate(post: TimelinePost): Date {
+  // First try the explicit date field
+  if (post.date) {
+    const date = new Date(post.date)
+    if (!isNaN(date.getTime())) {
+      return date
+    }
+  }
+
+  // Then try the id as a date
+  const idDate = new Date(post.id)
+  if (!isNaN(idDate.getTime())) {
+    return idDate
+  }
+
+  // Fall back to fetch time
+  return post.fetchedAt
+}
+
+/**
+ * Sorts posts by their date (newest last)
+ * Uses date field if present, falls back to ID if it's a valid date,
+ * otherwise uses the time when the feed was fetched
  */
 function sortPostsByDate(posts: TimelinePost[]): TimelinePost[] {
   return posts.sort((a, b) => {
-    // Try to parse as dates first
-    const dateA = new Date(a.id)
-    const dateB = new Date(b.id)
-
-    // If both are valid dates, compare them
-    if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-      return dateA.getTime() - dateB.getTime() // Newest last
-    }
-
-    // Fall back to string comparison
-    return a.id.localeCompare(b.id)
+    const dateA = getPostSortDate(a)
+    const dateB = getPostSortDate(b)
+    return dateA.getTime() - dateB.getTime() // Newest last
   })
 }
 

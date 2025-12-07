@@ -1,13 +1,18 @@
-# plaintext.casa CLI
+# Casa
+plaintext.casa CLI v0.1 -- A command-line tool for viewing and assembling timelines from plaintext.casa feeds.
 
-A command-line tool for viewing and assembling timelines from plaintext.casa feeds.
+## Implemented Features
 
-## Features
-
-- **Parse plaintext.casa feeds** in multiple formats (Markdown, Org, AsciiDoc, txt)
+- **Parse plaintext.casa feeds** in Markdown format
 - **Assemble timelines** by combining your posts with posts from all followed feeds
-- **Fetch remote feeds** via HTTP(S) or local file:// URLs
-- **Rich terminal output** with formatted tables and markdown rendering
+- **Fetch remote feeds** via HTTP(S) (or local file:// URLs for testing)
+- **Rich terminal output** with markdown rendering, including formatted tables and syntax highlighting
+
+## Planned Features
+
+- Feed path can be a URL
+- Configuration file to set default feed path
+- Feeds in multiple formats (Org, AsciiDoc, txt) via converters
 
 ## Installation
 
@@ -19,21 +24,23 @@ bun install
 
 ## Usage
 
-### View Timeline (Default)
+### View Timeline
 
-By default, the CLI assembles a timeline by fetching and combining posts from all feeds you follow:
-
+If you use the compiled binary:
 ```bash
+casa path/to/feed.md
+```
+
+You can also use bun directly. Check out https://bun.sh/ for help with the installation:
+```
 bun run cli.ts feed.md
 ```
 
 This will:
 1. Parse your feed file
-2. Extract all `:follow:` entries from the feed header
-3. Fetch and parse each followed feed
-4. Combine all posts (yours + followed feeds)
-5. Sort posts by date (newest first)
-6. Display the timeline in your terminal
+2. Extract and parse each `:follow:` entry
+3. Combine all posts and sort them by date (newest last)
+4. Display the timeline in your terminal
 
 ### View Feed Only
 
@@ -52,7 +59,7 @@ Usage
 Options
   --help                 Displays this message
   --version              Displays the version number
-  --timeline             Assemble timeline from followed feeds (default)
+  --timeline             Show your timeline (default)
   --feed-only            Show only the feed without timeline assembly
 
 Examples
@@ -71,18 +78,7 @@ bun run build
 
 This creates a `casa` binary that can be run without Bun installed.
 
-## How Timeline Assembly Works
-
-1. **Parse your feed**: The CLI reads and parses your feed file
-2. **Extract follows**: All `:follow:` entries are extracted from the feed header
-   - Format: `:follow: Name URL` or `:follow: URL`
-   - Example: `:follow: Alice https://alice.example/feed.md`
-3. **Fetch followed feeds**: Each followed feed is downloaded and parsed
-   - Supports HTTP(S) URLs and local file:// URLs
-   - Handles multiple formats (.md, .org, .adoc, .txt)
-4. **Combine posts**: Posts from all feeds are merged together
-5. **Sort timeline**: Posts are sorted by their ID (assumed to be RFC 3339 timestamps)
-6. **Display**: Each post shows the author, feed URL, and all metadata
+Unfortunately, this bundles the complete bun executable together with the cli application, which results in a huge executable (>100MB).
 
 ## Timeline Display Format
 
@@ -90,6 +86,7 @@ Each post in the timeline includes:
 
 - 👤 **Author** - The feed author
 - 🆔 **ID** - The post identifier/timestamp
+- ⌚ **Date** - The post timestamp, if the ID is not a timestamp
 - 🔗 **Feed URL** - Link to the source feed
 - 🌐 **Language** - If specified
 - ♯ **Tags** - Hashtags
@@ -99,18 +96,11 @@ Each post in the timeline includes:
 
 ## Error Handling
 
-If any followed feeds fail to fetch, the CLI will:
-- Display an error message for each failed feed
-- Continue processing other feeds
-- Show the timeline with available posts
+Right now, the CLI shows feeds that cannot be loaded, but otherwise ignores them and assembles the timeline out of everything that is available.
 
 ## Examples
 
-See the `../examples/` directory for sample feeds:
-- `feed.md` - Markdown format
-- `feed.org` - Org-mode format
-- `feed.adoc` - AsciiDoc format
-- `test-timeline.md` - Example feed with follows for testing
+See the `../examples/` directory for sample feeds.
 
 ## Development
 
@@ -121,12 +111,3 @@ This project was created using `bun init` in bun v1.3.2. [Bun](https://bun.sh) i
 ```bash
 bun run type-check
 ```
-
-### Project Structure
-
-- `cli.ts` - Main CLI entry point
-- `lib.ts` - Feed parser
-- `src/parser.ts` - Core parsing logic
-- `src/timeline.ts` - Timeline assembly logic
-- `src/cli-renderer.ts` - Terminal rendering
-- `src/types.ts` - TypeScript type definitions

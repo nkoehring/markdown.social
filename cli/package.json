@@ -1,8 +1,8 @@
 {
   "name": "casa-cli",
+  "version": "0.1.0",
   "module": "cli.ts",
   "type": "module",
-  "private": true,
   "scripts": {
     "build": "bun build ./cli.ts --minify --compile --outfile casa",
     "type-check": "tsc --noEmit -p tsconfig.json --composite false"
