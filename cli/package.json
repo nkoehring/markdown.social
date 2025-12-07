@@ -1,0 +1,23 @@
+{
+  "name": "casa-cli",
+  "version": "0.1.0",
+  "module": "cli.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun build ./cli.ts --minify --compile --outfile casa",
+    "type-check": "tsc --noEmit -p tsconfig.json --composite false"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.3",
+    "@types/marked-terminal": "^6.1.1",
+    "@types/node": "^24.10.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "marked": "^17.0.0",
+    "marked-terminal": "^7.3.0",
+    "meow": "^14.0.0"
+  }
+}

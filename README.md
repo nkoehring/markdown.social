@@ -6,7 +6,7 @@ A decentralized social network that uses plain text files over HTTP. Decoupling 
 
 ---
 
-    This is still in the drafting phase and changes are still very likely. 
+The plaintext.casa spec is still in its early stages!
 
 ---
 
@@ -16,7 +16,7 @@ A decentralized social network that uses plain text files over HTTP. Decoupling 
 
 Inspired by [Org Social](https://github.com/tanrax/org-social), twtxt and others, plaintext.casa is a decentralized social network that is as simple and flexible as writing blog posts with a static page generator, maybe even simpler.
 
-Other than the mentioned formats, plaintext.casa does not use a fixed file format but instead suggests shapes for different plain text formats like Markdown, Org, AsciiDoc or txt. Thanks to its flexibility, plaintext.casa will at least initially support Org Social feeds as well, but future compatibility is neither guaranteed nor planned.
+Other than the mentioned formats, plaintext.casa does not use a fixed file format but instead suggests shapes for different plain text formats like Markdown, Org, AsciiDoc or txt. Thanks to its flexibility, plaintext.casa supports Org Social feeds as well, but future compatibility is not guaranteed.
 
 plaintext.casa is meant to be easy to read and write by both humans and machines. Anyone who can host at least one file in a way that is reachable by the rest of the internet should be able to use all the features, with or without tooling that goes beyond any simple text editor.
 
@@ -55,9 +55,9 @@ Start by creating the file in the format of your choice, for example: `feed.md`,
 
     *) Either nick or author is required. Use nick for Org Social compatibility.
 
-The feed title can be defined either as level one title (like, `# The Title` in Markdown) or like any other variable (`:title: The Title` in MD or ADOC, or `#+TITLE: The Title` in Org). For Org Social compatibility, use the latter.
+The feed title can be defined either as level one title (like, `# The Title` in Markdown) or like any other variable (`:title: The Title` in MD or ADOC, or `#+TITLE: The Title` in Org).
 
-More fields can be added. They might or might not be supported by whatever tooling others use. In the latter case the tool should simply show them as text fields and otherwise ignore them.
+More fields can be added. They might or might not be supported by whatever tooling others use. The tool should simply show unsupported fields as text fields and otherwise ignore them.
 
 Depending on the format, the header might be formatted differently. Org-mode files should be formatted just like Org-Social suggests. AsciiDoc files should use AsciiDoc's Document Headers. Markdown has no build-in support for meta data, so plaintext.casa comes with its own format for it, that is heavily inspired by AsciiDoc's. See the [examples folder](/examples) for all supported formats and their specifics.
 
@@ -67,13 +67,14 @@ After the feed meta data follows an optional about section. This is just like a 
 
 ### Posts
 
-Then posts follow, ordered by time of creation, with the newest post last. Posts always start with the magic `**` followed by a newline a post meta data block. Post meta data can optionally be wrapped in `:PROPERTIES:` and `:END:`, but this is generally only about Org Social compatibility. An empty line marks the end of the post meta data block.
+Posts follow, ordered by time of creation, with the newest post last. Posts always start with the magic `**` followed by a newline and a post meta data block. Post meta data can optionally be wrapped in `:PROPERTIES:` and `:END:`, but this is generally only about Org Social compatibility. An empty line marks the end of the post meta data block.
 
 Following fields are supported by default:
 
 |   Field     |                              Description                           | Example                 | Required |
 | ----------- | ------------------------------------------------------------------ | ----------------------- | -------- |
 | id          | Unique identifier, use an RFC 3339 formatted timestamp for Social Org compatibility | `my-first-post` or `2025-11-11T12:00:00+0100` | ✔ |
+| date        | Publishing date. **Recommended when IDs are not timestamps**       | `2025-11-11T23:42:00Z`  |  ✘       |
 | lang        | The language used in this post. Use [ISO 639-1](https://www.loc.gov/standards/iso639-2/php/code_list.php) | `en`,`de`,`sw`,`art`,`tlh` | ✘ |
 | tags        | space-separated tags                                               | `plaintext social feed` |  ✘       |
 | reply_to    | ID of post being replied to. Format: `URL`+`#`+`ID`                | `https://foo.tld/plaintext.casa/feed.adoc#my-first-post` | ✘ |
@@ -112,7 +113,8 @@ decides how they want it to be rendered.
 I wonder, how a markdown based decentral social media network would look like...
 
 **
-:id: 2025-10-26T17:27:00Z
+:id: My second post
+:date: 2025-10-26T17:27:00Z
 :lang: de
 :mood: 😜
 
