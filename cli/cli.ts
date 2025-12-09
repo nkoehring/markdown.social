@@ -68,12 +68,9 @@ if (!filePath) {
   void readFeedFile(filePath)
 }
 
-async function checkFileAccess(
-  absPath: string,
-  mode = fs.constants.R_OK,
-): boolean {
+function checkFileAccess(absPath: string, mode = fs.constants.R_OK): boolean {
   try {
-    await fs.promises.access(absPath, fs.constants.R_OK | fs.constants.W_OK)
+    fs.accessSync(absPath, fs.constants.R_OK | fs.constants.W_OK)
     return true
   } catch {
     return false
