@@ -1,5 +1,5 @@
 # Casa
-plaintext.casa CLI v0.1 -- A command-line tool for viewing and assembling timelines from plaintext.casa feeds.
+plaintext.casa CLI v0.2 -- A command-line tool for viewing and assembling timelines from plaintext.casa feeds.
 
 ## Implemented Features
 
