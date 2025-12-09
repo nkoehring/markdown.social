@@ -57,9 +57,9 @@
 
       @media (prefers-color-scheme: light) {
         :root {
-          --bg: #a0b1b1;
-          --bg-accent-1: #b1a0a9;
-          --bg-accent-2: #b1a9a0;
+          --bg: #d0e1e1;
+          --bg-accent-1: #d1e9e0;
+          --bg-accent-2: #e0e0e1;
           --fg: #232b2b;
           --fg-accent-1: #2b2723;
           --fg-accent-2: #2b2327;
@@ -182,7 +182,7 @@
       .cta {
         background: var(--fg-accent-2);
         color: var(--bg);
-        padding: 0.75rem 2rem;
+        padding: 0.8rem 2rem 0.7rem;
         border-radius: 4px;
         text-decoration: none;
         display: inline-block;
@@ -214,6 +214,16 @@
         color: var(--fg);
         text-decoration: none;
         font-weight: bold;
+      }
+
+      a.cta {
+        color: var(--bg);
+      }
+      a.cta:hover {
+        text-decoration: none;
+      }
+      a.cta:visited {
+        color: var(--bg);
       }
 
       .logo {
