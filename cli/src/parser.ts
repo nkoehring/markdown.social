@@ -138,7 +138,7 @@ export function parseFromRaw(
   feedConfig = defaultConfigFeed,
   postConfig = defaultConfigPost,
 ): FeedParserResult {
-  const lines = raw.split('\n')
+  const lines = raw.trim().split('\n')
   const headerLines: string[] = []
   const aboutLines: string[] = []
   const posts: { metaLines: string[]; contentLines: string[] }[] = []

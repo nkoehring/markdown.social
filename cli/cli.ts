@@ -137,7 +137,7 @@ async function readFeedFile(filePath: string) {
 
   try {
     for await (const chunk of readStream) chunks.push(chunk)
-    const rawFeed = chunks.join().trim()
+    const rawFeed = chunks.join()
 
     const fileFormat = filePath.split('.').at(-1)
     const parsedFeed = parseFeed(rawFeed, fileFormat)
