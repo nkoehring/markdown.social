@@ -2,9 +2,8 @@ import fs from 'fs'
 import { resolve } from 'path'
 import { pipeline } from 'node:stream/promises'
 import meow from 'meow'
-import parseFeed from './lib'
+import parseFeed, { assembleTimeline } from 'plaintext-casa'
 import { renderMarkdownFeed, renderTimeline } from './src/cli-renderer'
-import { assembleTimeline } from './src/timeline'
 import pkg from './package.json'
 
 const CLIENT = `${pkg.name} v${pkg.version}`

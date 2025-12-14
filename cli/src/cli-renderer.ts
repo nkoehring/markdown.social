@@ -1,8 +1,7 @@
 import { marked, type MarkedExtension } from 'marked'
 import { markedTerminal } from 'marked-terminal'
 
-import type { Feed, Post } from './types'
-import type { TimelinePost } from './timeline'
+import type { Feed, Post, TimelinePost } from 'plaintext-casa'
 
 const termRenderer = markedTerminal({
   width: 80,
@@ -14,46 +13,47 @@ const termRenderer = markedTerminal({
 }) as MarkedExtension
 marked.use(termRenderer)
 
-const knownFields = [
-  'title',
-  'author',
-  'description',
-  'lang',
-  'avatar',
-  'links',
-  'follows',
-  'pages',
-  'about',
-  'posts',
-]
+const stringFieldRenderer = (v: string, f: string) => `| **${f}** | ${v} |`
+const listFieldRenderer = (v: string[], f: string) => {
+  if (v.length === 0) return `| **${f}** | none |`
+  if (v.length === 1) return `| **${f}** | ${v[0]} |`
 
-function feedHeaderToMd(feed: Feed): string {
-  let md = `# ${feed.title}\n`
-
-  md += `| **Author** | ${feed.author} |\n`
-  md += `| --- | --- |\n`
-
-  if (feed.description) md += `| **Description** | ${feed.description} |\n`
-  if (feed.lang) md += `| **Language** | ${feed.lang} |\n`
-  if (feed.links?.length) {
-    md += `| **Links** | ${feed.links[0]} |\n`
-    md += feed.links
+  return (
+    `| **${f}** | ${v[0]} |\n` +
+    v
       .slice(1)
       .map((l) => `| | ${l} |`)
       .join('\n')
-  }
-  if (feed.follows?.length) {
-    md += `| **Follows** | ${feed.follows[0]} |\n`
-    md += feed.follows
-      .slice(1)
-      .map((l) => `| | ${l} |`)
-      .join('\n')
-  }
-
-  return md
+  )
 }
 
-function postToMd(post: Post): string {
+const headerFields = {
+  title: (v: string) => `# ${v}`,
+  author: stringFieldRenderer,
+  _separator: () => '| --- | --- |',
+  description: stringFieldRenderer,
+  lang: stringFieldRenderer,
+  client: stringFieldRenderer,
+  avatar: stringFieldRenderer,
+  links: listFieldRenderer,
+  follows: listFieldRenderer,
+  pages: listFieldRenderer,
+}
+
+export function feedHeaderToMd(feed: Feed): string {
+  return Object.entries(headerFields)
+    .map(([key, render]) => {
+      const x = feed[key as keyof Feed]
+      if (!x && !key.startsWith('_')) return null
+      const value = x as string & string[] // ugh
+      const field = key[0]?.toLocaleUpperCase() + key.slice(1)
+      return render(value, field)
+    })
+    .filter((v) => v)
+    .join('\n')
+}
+
+export function postToMd(post: Post): string {
   let md = `\n\n| 🆔 | ${post.id} |\n`
   md += '|---|---|\n'
 
@@ -70,10 +70,7 @@ function postToMd(post: Post): string {
 
 export async function renderMarkdownFeed(feed: Feed): Promise<string> {
   let md = `${feedHeaderToMd(feed)}
-
-## About
-
-${feed.about}\n\n---\n\n`
+\n\n---\n\n${feed.about}\n\n---\n\n`
 
   feed.posts.forEach((post) => {
     md += postToMd(post)
