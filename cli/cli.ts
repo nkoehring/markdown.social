@@ -1,185 +1,156 @@
-import fs from 'fs'
-import { resolve } from 'path'
-import { pipeline } from 'node:stream/promises'
 import meow from 'meow'
-import parseFeed, { assembleTimeline } from 'plaintext-casa'
-import { renderMarkdownFeed, renderTimeline } from './src/cli-renderer'
 import pkg from './package.json'
+import { loadConfig, initCommand } from './src/init/index'
+import { timelineCommand } from './src/timeline/index'
+import { addCommand } from './src/add/index'
+import { buildCommand } from './src/build/index'
+import { pagesCommand } from './src/pages/index'
 
 const CLIENT = `${pkg.name} v${pkg.version}`
 
 const cli = meow(
-  `${CLIENT} is a reference implementation for handling plaintext-casa feeds.
+  `${CLIENT} - Reference implementation for plaintext.casa feeds
 
     Usage
-        $ casa <feed>
+      $ casa <command> [options]
+
+    Commands
+      init <feed>        Initialize config with feed path
+      timeline [page]    View timeline from feed (default)*
+      add [page]         Add a new post to feed*
+      pages              List all pages in feed*
+      build              Generate static website*
 
     Options
-    -t --timeline          Assemble timeline from followed feeds (default)
-    -a --add               Add a new post to the feed and open in editor
-    -o --feed-only         Show only the feed without timeline assembly
-    -h --help              Displays this message
-    -v --version           Displays the version number
+      --feed-only        Show only the feed without followed feeds (timeline)
+      -h, --help         Show help
+      -v, --version      Show version
 
     Examples
-       $ casa feed.md
-       $ casa --timeline feed.md
-       $ casa --feed-only feed.md
-       $ casa --add feed.md
+      $ casa init feed.md
+      $ casa timeline
+      $ casa timeline --feed-only
+      $ casa add
+
+    *) The build and pages commands are not yet fully implemented!
   `.trim(),
   {
     importMeta: import.meta,
     flags: {
-      feed: {
-        type: 'string',
-      },
       help: {
         shortFlag: 'h',
       },
       version: {
         shortFlag: 'v',
       },
-      timeline: {
-        type: 'boolean',
-        shortFlag: 't',
-        default: true,
-      },
       feedOnly: {
         type: 'boolean',
-        shortFlag: 'o',
         default: false,
       },
-      add: {
-        type: 'boolean',
-        shortFlag: 'a',
-        default: false,
+      outputDir: {
+        type: 'string',
+      },
+      templateDir: {
+        type: 'string',
       },
     },
+    version: CLIENT,
   },
 )
 
-const filePath = cli.input.at(0)
+const command = cli.input[0]
+const target = cli.input[1]
 
-if (!filePath) {
-  console.error('Path to feed is mandatory.')
-  cli.showHelp(1)
-} else {
-  void readFeedFile(filePath)
-}
+// Load config
+const config = loadConfig()
 
-function checkFileAccess(absPath: string, mode = fs.constants.R_OK): boolean {
-  try {
-    fs.accessSync(absPath, fs.constants.R_OK | fs.constants.W_OK)
-    return true
-  } catch {
-    return false
+function checkTarget(target?: string, showHelp = false): string {
+  if (!target) {
+    console.error('No feed specified and no config found.')
+    console.error('Run "casa init <feed>" first or specify feed path.')
+    if (showHelp) cli.showHelp(1)
+    else process.exit(1)
   }
+  return target!
 }
 
-async function addPostToFeed(absPath: string) {
-  try {
-    // Generate RFC 3339 timestamp as ID
-    const timestamp = new Date().toISOString()
-
-    // Create new post with minimal metadata
-    // Ensure proper spacing: newline then blank line, then post marker
-    const newPost = `\n**\n:id: ${timestamp}\n:client: ${CLIENT}\n\nWrite here...\n`
-
-    // Append to the feed file
-    await fs.promises.appendFile(absPath, newPost, 'utf8')
-
-    console.debug(`\nNew post added with ID: ${timestamp}`)
-
-    // Get the editor from environment variables
-    const editor = process.env.VISUAL || process.env.EDITOR || 'vi'
-    console.debug(`Opening feed in editor: ${editor}`)
-
-    // Open the file in the editor
-    const { spawn } = await import('child_process')
-    const editorProcess = spawn(editor, [absPath], {
-      stdio: 'inherit',
-    })
-
-    editorProcess.on('exit', (code) => {
-      if (code !== 0) {
-        console.error('\nEditor exited with code:', code)
-        process.exit(1)
-      }
-    })
-  } catch (err) {
-    console.error('Failed to add post to feed at', absPath, err)
-    process.exit(1)
-  }
-}
-
-async function readFeedFile(filePath: string) {
-  const absPath = resolve(filePath)
-
-  // Handle --add flag
-  if (cli.flags.add) {
-    if (!checkFileAccess(absPath, fs.constants.W_OK)) {
-      console.error('Cannot add post, because file is not writable!')
-      process.exit(1)
+async function main() {
+  // Route to appropriate command
+  switch (command) {
+    case 'init': {
+      checkTarget(target)
+      initCommand({ feed: target })
+      break
     }
 
-    await addPostToFeed(absPath)
-    return
-  }
-
-  if (!checkFileAccess(absPath)) {
-    console.error('Cannot access feed at', absPath)
-    process.exit(1)
-  }
-
-  const readStream = fs.createReadStream(absPath, { encoding: 'utf8' })
-  const chunks: string[] = []
-
-  try {
-    for await (const chunk of readStream) chunks.push(chunk)
-    const rawFeed = chunks.join()
-
-    const fileFormat = filePath.split('.').at(-1)
-    const parsedFeed = parseFeed(rawFeed, fileFormat)
-
-    // TODO: handle parser errors and warnings?
-
-    // If --feed-only flag is set, just show the feed
-    if (cli.flags.feedOnly) {
-      const renderedFeed = await renderMarkdownFeed(parsedFeed.feed)
-      console.log(renderedFeed)
-      return
+    case 'timeline': {
+      const feedPath = checkTarget(target || config?.feed)
+      await timelineCommand({
+        feedPath,
+        feedOnly: cli.flags.feedOnly,
+      })
+      break
     }
 
-    // Default behavior: assemble timeline from followed feeds
-    if (cli.flags.timeline) {
-      const followCount = parsedFeed.feed.follows?.length || 0
+    case 'add': {
+      const feedPath = checkTarget(target || config?.feed)
+      await addCommand({
+        feedPath,
+        client: CLIENT,
+      })
+      break
+    }
 
-      if (followCount > 0) {
-        console.error(
-          `\nAssembling timeline from ${followCount} followed feed${followCount === 1 ? '' : 's'}...\n`,
-        )
-      }
+    case 'build': {
+      const feedPath = checkTarget(target || config?.feed)
+      await buildCommand({
+        feedPath,
+        outputDir: cli.flags.outputDir,
+        templateDir: cli.flags.templateDir,
+      })
+      break
+    }
 
-      const timelineResult = await assembleTimeline(parsedFeed.feed, absPath)
+    case 'pages': {
+      const feedPath = checkTarget(target || config?.feed)
+      await pagesCommand({ feedPath })
+      break
+    }
 
-      // Show any errors that occurred while fetching followed feeds
-      if (timelineResult.errors.length > 0) {
-        console.error('Errors fetching followed feeds:')
-        timelineResult.errors.forEach(({ url, error }) => {
-          console.error(`  - ${url}: ${error}`)
+    case undefined: {
+      // Default to timeline if no command given
+      const feedPath = checkTarget(target || config?.feed, true)
+      await timelineCommand({
+        feedPath,
+        feedOnly: cli.flags.feedOnly,
+      })
+      break
+    }
+
+    default: {
+      // Check if the "command" looks like a file path
+      if (
+        command &&
+        (command.endsWith('.md') ||
+          command.endsWith('.txt') ||
+          command.endsWith('.org') ||
+          command.endsWith('.adoc') ||
+          command.includes('/'))
+      ) {
+        // Treat as feed path for timeline command
+        await timelineCommand({
+          feedPath: command,
+          feedOnly: cli.flags.feedOnly,
         })
-        console.error('')
+      } else {
+        console.error(`Unknown command: ${command}`)
+        cli.showHelp(1)
       }
-
-      const renderedTimeline = await renderTimeline(timelineResult.posts)
-      console.log(renderedTimeline)
-    } else {
-      // Fallback: just show the feed
-      const renderedFeed = await renderMarkdownFeed(parsedFeed.feed)
-      console.log(renderedFeed)
     }
-  } catch (err) {
-    console.error('Failed to read feed at', absPath, err)
-    process.exit(1)
   }
 }
+
+main().catch((err) => {
+  console.error('Error:', err)
+  process.exit(1)
+})

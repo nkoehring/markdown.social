@@ -1,10 +1,11 @@
 {
   "name": "casa-cli",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "module": "cli.ts",
   "type": "module",
   "scripts": {
     "build": "bun build ./cli.ts --minify --compile --outfile casa",
+    "test": "bun test",
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
@@ -16,9 +17,11 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "plaintext-casa": "file:../lib",
+    "env-paths": "^3.0.0",
     "marked": "^17.0.1",
     "marked-terminal": "^7.3.0",
-    "meow": "^14.0.0"
+    "meow": "^14.0.0",
+    "plaintext-casa": "file:../lib",
+    "smol-toml": "^1.5.2"
   }
 }

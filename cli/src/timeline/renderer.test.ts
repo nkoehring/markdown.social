@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test'
-import { feedHeaderToMd } from './cli-renderer'
+import { feedHeaderToMd } from './renderer'
 
 const fullFeed = {
   title: "Alice's Wonderland",
