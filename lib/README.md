@@ -18,6 +18,7 @@ bun install plaintext-casa
 
 - **Parse feeds** in multiple formats (Markdown, Org, AsciiDoc, plain text)
 - **Assemble timelines** by fetching and combining posts from followed feeds
+- **Post updates** - Support for the `supersedes` field to update posts while maintaining append-only feeds
 - **Type-safe** - Full TypeScript support with comprehensive type definitions
 - **Flexible** - Supports custom metadata fields
 - **Zero dependencies** - Core library has no external dependencies
@@ -84,14 +85,14 @@ Parses a plaintext.casa feed from a string.
 
 ### `assembleTimeline(userFeed, userFeedUrl?)`
 
-Assembles a timeline by fetching and combining posts from all followed feeds.
+Assembles a timeline by fetching and combining posts from all followed feeds. Automatically filters out superseded posts.
 
 **Parameters:**
 - `userFeed: Feed` - The parsed user feed
 - `userFeedUrl?: string` - Optional URL of the user's feed
 
 **Returns:** `Promise<TimelineResult>` containing:
-- `posts: TimelinePost[]` - All posts sorted chronologically
+- `posts: TimelinePost[]` - All posts sorted chronologically with superseded posts filtered out
 - `errors: Array<{url, error}>` - Any errors fetching feeds
 
 ## Types
@@ -122,6 +123,7 @@ interface Post {
   lang: string
   tags: string
   reply_to: URL
+  supersedes?: string
   mood: string
   content_warning: string
   content: string
@@ -152,12 +154,55 @@ Posts in timelines are sorted chronologically (oldest first, newest last) using:
 
 This allows custom IDs while maintaining chronological order.
 
+## Post Updates with Supersedes
+
+The `supersedes` field allows you to update or correct posts while maintaining the append-only nature of plaintext.casa feeds.
+
+When a post includes `:supersedes: <post-id>`, it indicates that this post replaces an older post. The timeline automatically filters out superseded posts, showing only the latest version.
+
+**Important:** You can only supersede posts from your own feed. Cross-feed superseding is prevented to avoid censorship and maintain decentralization.
+
+```typescript
+// Original post with an error
+const feedWithError = `
+**
+:id: 2024-01-01T10:00:00Z
+
+The Earth is flat.
+`
+
+// Correction using supersedes
+const feedWithCorrection = `
+**
+:id: 2024-01-01T10:00:00Z
+
+The Earth is flat.
+
+**
+:id: 2024-01-01T12:00:00Z
+:supersedes: 2024-01-01T10:00:00Z
+
+Correction: The Earth is round.
+`
+
+// Timeline will only show the correction
+const timeline = await assembleTimeline(parseFeed(feedWithCorrection, 'md').feed)
+// timeline.posts.length === 1 (only the corrected post)
+```
+
+The original post remains in the feed file, but is filtered from timeline views.
+
 ## Supported Formats
 
+Right now, only **Markdown** is fully supported. AsciiDoc and Plaintext should also work, but are not explicitly tested.
+
 - **Markdown** (`.md`, `.markdown`)
-- **Org mode** (`.org`) - Org Social compatible
 - **AsciiDoc** (`.adoc`, `.asciidoc`)
 - **Plain text** (`.txt`, `.text`)
+
+## Support planned
+
+- **Org mode** (`.org`) - Org Social compatible
 
 ## Development
 

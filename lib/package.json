@@ -1,6 +1,6 @@
 {
   "name": "plaintext-casa",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Library for parsing and working with plaintext.casa feeds",
   "type": "module",
   "main": "index.ts",

@@ -12,6 +12,7 @@ export interface Post {
   lang?: string;
   tags?: string;
   reply_to?: string;
+  supersedes?: string;
   mood?: string;
   content_warning?: string;
   content: string;

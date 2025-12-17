@@ -80,6 +80,7 @@ Following fields are supported by default:
 | reply_to    | ID of post being replied to. Format: `URL`+`#`+`ID`                | `https://foo.tld/plaintext.casa/feed.adoc#my-first-post` | ✘ |
 | mood        | Mood indicator, either as emoji or plaintext.                      | `😊`,`❤`,`🚀`          |  ✘       |
 | content_warning | To give any kind of content warning                            | `clickbait`             |  ✘       |
+| supersedes  | This post supersedes an older post of yours.                       | `2025-10-10T10:30:00Z`  |  ✘       |
 
 Just like with the feed meta data, additional fields are allowed, but might not be interpreted by any tooling.
 

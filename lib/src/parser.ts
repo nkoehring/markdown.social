@@ -51,6 +51,8 @@ export const defaultConfigPost: ParserConfig = Object.freeze({
     { label: "date", required: false },
     { label: "lang", required: false },
     { label: "tags", required: false },
+    { label: "reply_to", required: false },
+    { label: "supersedes", required: false },
     { label: "mood", required: false },
     { label: "content_warning", required: false },
   ],

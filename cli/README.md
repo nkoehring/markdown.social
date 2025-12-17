@@ -174,6 +174,30 @@ Each post in the timeline includes:
 - 🎭 **Mood** - Mood indicator
 - ⚠️ **Content Warning** - If present
 - ↪️ **Reply To** - If it's a reply
+- 🔄 **Supersedes** - If this post replaces an older post
+
+## Post Updates with Supersedes
+
+Plaintext.casa feeds are append-only, meaning you should never edit or delete old posts. However, you can publish corrections or updates using the `supersedes` field.
+
+When a post includes `:supersedes: <post-id>`, it indicates that this post replaces the referenced post. The timeline will automatically filter out superseded posts, showing only the latest version.
+
+**Important:** You can only supersede your own posts. Posts from different feeds cannot supersede each other, preventing censorship and ensuring each feed owner maintains control of their content.
+
+**Example:**
+
+```markdown
+**
+:id: 2024-01-01T10:00:00Z
+
+The Earth is flat.
+
+**
+:id: 2024-01-01T12:00:00Z
+:supersedes: 2024-01-01T10:00:00Z
+
+Correction: The Earth is round.
+```
 
 ## Building
 

@@ -157,6 +157,39 @@ function sortPostsByDate(posts: TimelinePost[]): TimelinePost[] {
 }
 
 /**
+ * Filters out superseded posts from the timeline
+ * If a post has a 'supersedes' field, it replaces the post with that ID
+ * Only posts from the same feed can supersede each other
+ */
+function filterSupersededPosts(posts: TimelinePost[]): TimelinePost[] {
+  // Build a map of superseded post IDs to the feed identity that supersedes them
+  // Feed identity is: feedUrl (if defined) OR feedAuthor+feedTitle (fallback)
+  const supersededMap = new Map<string, string>();
+
+  const getFeedIdentity = (post: TimelinePost): string => {
+    return post.feedUrl || `${post.feedAuthor}::${post.feedTitle}`;
+  };
+
+  for (const post of posts) {
+    if (post.supersedes) {
+      // Map the superseded post ID to the feed identity doing the superseding
+      supersededMap.set(post.supersedes, getFeedIdentity(post));
+    }
+  }
+
+  // Filter out posts that have been superseded by a post from the same feed
+  return posts.filter((post) => {
+    const supersedingFeedIdentity = supersededMap.get(post.id);
+    if (!supersedingFeedIdentity) {
+      // Not superseded by anyone
+      return true;
+    }
+    // Only filter out if superseded by a post from the same feed
+    return getFeedIdentity(post) !== supersedingFeedIdentity;
+  });
+}
+
+/**
  * Assembles a timeline from a user's feed and all followed feeds
  */
 export async function assembleTimeline(
@@ -174,9 +207,11 @@ export async function assembleTimeline(
   const follows = userFeed.follows || [];
 
   if (follows.length === 0) {
-    // No follows, just return user's posts
+    // No follows, just filter and return user's posts
+    const sortedPosts = sortPostsByDate(allPosts);
+    const filteredPosts = filterSupersededPosts(sortedPosts);
     return {
-      posts: sortPostsByDate(allPosts),
+      posts: filteredPosts,
       errors,
     };
   }
@@ -221,11 +256,14 @@ export async function assembleTimeline(
   // Wait for all feeds to be fetched
   await Promise.all(followPromises);
 
-  // Sort all posts by date (newest first)
+  // Sort all posts by date (newest last)
   const sortedPosts = sortPostsByDate(allPosts);
 
+  // Filter out superseded posts
+  const filteredPosts = filterSupersededPosts(sortedPosts);
+
   return {
-    posts: sortedPosts,
+    posts: filteredPosts,
     errors,
   };
 }

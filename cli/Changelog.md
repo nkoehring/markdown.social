@@ -57,3 +57,7 @@ casa /path/to/feed.md
 ```
 
 When you provide a path that looks like a feed file (ends with `.md`, `.org`, `.txt`, `.adoc`, or contains `/`), it will be treated as `casa timeline <path>`.
+
+## CLI v3.1
+
+Added support for the :supersedes: post property.

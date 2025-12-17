@@ -62,6 +62,7 @@ export function postToMd(post: Post): string {
   if (post.mood) md += `| 🎭 | ${post.mood} |\n`
   if (post.content_warning) md += `| ⚠️ | ${post.content_warning} |\n`
   if (post.reply_to) md += `| ↪️ | ${post.reply_to} |\n`
+  if (post.supersedes) md += `| 🔄 | Supersedes: ${post.supersedes} |\n`
 
   md += `\n\n${post.content}\n`
 
@@ -95,6 +96,7 @@ function timelinePostToMd(post: TimelinePost): string {
   if (post.mood) md += `| 🎭 | ${post.mood} |\n`
   if (post.content_warning) md += `| ⚠️ | ${post.content_warning} |\n`
   if (post.reply_to) md += `| ↪️ | ${post.reply_to} |\n`
+  if (post.supersedes) md += `| 🔄 | Supersedes: ${post.supersedes} |\n`
 
   md += `\n\n${post.content}\n`
 
