@@ -1,7 +1,12 @@
 {
   "name": "plaintext-casa",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Library for parsing and working with plaintext.casa feeds",
+  "homepage": "https://plaintext.casa",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nkoehring/plaintext.casa.git"
+  },
   "type": "module",
   "main": "index.ts",
   "types": "index.ts",
