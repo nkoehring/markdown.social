@@ -26,10 +26,9 @@ export async function timelineCommand(options: TimelineOptions): Promise<void> {
     for await (const chunk of readStream) chunks.push(chunk)
     const rawFeed = chunks.join()
 
-    const fileFormat = options.feedPath.split('.').at(-1)
-    const parsedFeed = parseFeed(rawFeed, fileFormat)
-
+    // TODO: handle file formats
     // TODO: handle parser errors and warnings?
+    const parsedFeed = parseFeed(rawFeed)
 
     // If --feed-only flag is set, just show the feed
     if (options.feedOnly) {
@@ -39,7 +38,7 @@ export async function timelineCommand(options: TimelineOptions): Promise<void> {
     }
 
     // Default behavior: assemble timeline from followed feeds
-    const followCount = parsedFeed.feed.follows?.length || 0
+    const followCount = parsedFeed.feed.follows.length
 
     if (followCount > 0) {
       console.error(

@@ -27,10 +27,9 @@ export async function pagesCommand(options: PagesOptions): Promise<void> {
   try {
     // Read and parse the feed
     const rawFeed = await readFile(absPath, 'utf8')
-    const fileFormat = options.feedPath.split('.').at(-1)
-    const parsedFeed = parseFeed(rawFeed, fileFormat)
+    const parsedFeed = parseFeed(rawFeed)
 
-    const pages = parsedFeed.feed.pages || []
+    const pages = parsedFeed.feed.pages
 
     if (pages.length === 0) {
       console.log('No pages defined.')

@@ -24,9 +24,9 @@ export interface Feed {
   description?: string;
   lang?: string;
   avatar?: string;
-  links?: string[];
-  follows?: string[];
-  pages?: string[];
+  links: string[];
+  follows: string[];
+  pages: string[];
   about?: string;
   posts: Post[];
 }

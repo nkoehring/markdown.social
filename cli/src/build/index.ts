@@ -33,8 +33,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
   try {
     // Read and parse the feed
     const rawFeed = await fs.promises.readFile(absPath, 'utf8')
-    const fileFormat = options.feedPath.split('.').at(-1)
-    const parsedFeed = parseFeed(rawFeed, fileFormat)
+    const parsedFeed = parseFeed(rawFeed)
 
     // Generate the static site
     const result = await generateStaticSite(parsedFeed.feed, {
@@ -49,7 +48,7 @@ export async function buildCommand(options: BuildOptions): Promise<void> {
     if (result.warnings.length > 0) {
       console.log('\nWarnings:')
       result.warnings.forEach((warning) => {
-        console.log(`  ⚠️  ${warning}`)
+        console.log(`⚠️ ${warning}`)
       })
     }
   } catch (err) {

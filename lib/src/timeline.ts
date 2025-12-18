@@ -49,23 +49,11 @@ function parseFollowEntry(
 async function fetchAndParseFeed(url: string): Promise<Feed | null> {
   try {
     let rawFeed: string;
-    let fileFormat: string | undefined;
 
     // Handle file:// URLs
     if (url.startsWith("file://")) {
       const filePath = fileURLToPath(url);
       rawFeed = await fs.readFile(filePath, "utf-8");
-
-      // Determine format from file extension
-      if (filePath.endsWith(".md") || filePath.endsWith(".markdown")) {
-        fileFormat = "md";
-      } else if (filePath.endsWith(".org")) {
-        fileFormat = "org";
-      } else if (filePath.endsWith(".adoc") || filePath.endsWith(".asciidoc")) {
-        fileFormat = "adoc";
-      } else if (filePath.endsWith(".txt") || filePath.endsWith(".text")) {
-        fileFormat = "txt";
-      }
     } else {
       // Handle HTTP(S) URLs
       const response = await fetch(url);
@@ -76,24 +64,9 @@ async function fetchAndParseFeed(url: string): Promise<Feed | null> {
 
       const contentType = response.headers.get("content-type") || "";
       rawFeed = await response.text();
-
-      // Try to determine file format from URL or content-type
-      if (url.endsWith(".md") || url.endsWith(".markdown")) {
-        fileFormat = "md";
-      } else if (url.endsWith(".org")) {
-        fileFormat = "org";
-      } else if (url.endsWith(".adoc") || url.endsWith(".asciidoc")) {
-        fileFormat = "adoc";
-      } else if (url.endsWith(".txt") || url.endsWith(".text")) {
-        fileFormat = "txt";
-      } else if (contentType.includes("markdown")) {
-        fileFormat = "md";
-      } else if (contentType.includes("text/plain")) {
-        fileFormat = "txt";
-      }
     }
 
-    const parseResult = parseFeed(rawFeed, fileFormat);
+    const parseResult = parseFeed(rawFeed);
     return parseResult.feed;
   } catch (error) {
     // Don't log here - let caller handle error reporting
