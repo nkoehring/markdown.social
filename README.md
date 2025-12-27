@@ -6,7 +6,7 @@ A decentralized social network that uses plain text files over HTTP. Decoupling 
 
 ---
 
-The plaintext.casa spec is still in its early stages!
+The plaintext.casa spec is still in its early stages. Help us grow by adding your feed to [public-feeds.txt](public-feeds.txt), ask questions, make suggestions, challenge the idea...
 
 ---
 
